@@ -4,6 +4,8 @@ import Theme from '../components/Theme';
 import List from '../components/List';
 import ListItem from '../components/ListItem';
 
+import FabButton from '../components/FabButton';
+
 type Props = {};
 export default class TestList extends Component<Props> {
   static navigationOptions = {
@@ -50,6 +52,8 @@ export default class TestList extends Component<Props> {
             ))
           }
         </List>
+        <FabButton icon="add" onClick={ () => alert('new test') }>
+        </FabButton>
       </Theme>
     );
   }
