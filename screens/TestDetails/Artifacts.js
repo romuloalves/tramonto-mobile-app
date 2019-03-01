@@ -1,20 +1,17 @@
+
 import React, { Component } from 'react';
 
-import Theme from '../components/Theme';
-import TestsList from '../components/List';
-import ListItem from '../components/ListItem';
+import Theme from '../../components/Theme';
+import ArtifactsList from '../../components/List';
+import ListItem from '../../components/ListItem'
 
 import { List } from 'react-native-paper';
 
-import InstructionBanner from '../components/InstructionBanner';
+import InstructionBanner from '../../components/InstructionBanner';
 
-import FabButton from '../components/FabButton';
+import FabButton from '../../components/FabButton';
 
 export default class TestList extends Component {
-  static navigationOptions = {
-    title: 'Testes'
-  };
-
   state = {
     bannerVisible: true
   };
@@ -41,16 +38,16 @@ export default class TestList extends Component {
   render() {
     const items = [
       {
-        title: 'TR0001',
-        description: 'Descrição do teste TR0001, relacionado ao software ABC'
+        title: 'Artefato 1',
+        description: 'Executor Um'
       },
       {
-        title: 'TR0002',
-        description: 'O teste TR0002 é relacionado a funcionalidade 123 que tem por objetivo a manutenção de...'
+        title: 'Artefato 2',
+        description: 'Executor Um'
       },
       {
-        title: 'TR0003',
-        description: 'Teste de intrusão na rede wireless da empresa XYZ'
+        title: 'Artefato 3',
+        description: 'Executor Dois'
       },
     ];
 
@@ -60,20 +57,20 @@ export default class TestList extends Component {
       <Theme>
         <InstructionBanner visible={ bannerVisible }
           onPress={ this.onBannerPress }>
-          Esta é sua tela inicial. Ela lista todos os testes no qual você está envolvido.
+          Esta tela lista todos os artefatos adicionados ao teste.
         </InstructionBanner>
-        <TestsList>
+        <ArtifactsList>
           {
             items.map((item, key) => (
               <ListItem key={ key }
                 title={ item.title }
                 description={ item.description }
                 onClick={ () => this.onListItemClick(item) }
-                right={ props => <List.Icon {...props} icon="star-border" /> }></ListItem>
+                right={ props => <List.Icon {...props} icon="cloud-download" /> }></ListItem>
             ))
           }
-        </TestsList>
-        <FabButton icon="add" onClick={ () => alert('new test') }>
+        </ArtifactsList>
+        <FabButton icon="cloud-upload" onClick={ () => alert('new artifact') }>
         </FabButton>
       </Theme>
     );

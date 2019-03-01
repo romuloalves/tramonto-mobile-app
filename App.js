@@ -2,7 +2,7 @@ import { createStackNavigator, createAppContainer } from 'react-navigation';
 
 // Screens
 import TestList from './screens/TestList';
-import TestDetails from './screens/TestDetails';
+import TestDetails from './screens/TestDetails/TestDetails';
 
 const MainNavigator = createStackNavigator({
   Home: { screen: TestList },

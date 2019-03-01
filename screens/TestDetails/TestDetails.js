@@ -2,9 +2,8 @@ import * as React from 'react';
 
 import { Appbar, BottomNavigation, Text } from 'react-native-paper';
 
-const ArtifactsRoute = () => <Text>Artefatos</Text>;
-
-const PeopleRoute = () => <Text>Membros</Text>;
+import Artifacts from './Artifacts';
+import Members from './Members';
 
 export default class MyComponent extends React.Component {
   static navigationOptions = ({ navigation }) => ({
@@ -19,7 +18,7 @@ export default class MyComponent extends React.Component {
   state = {
     index: 0,
     routes: [
-      { key: 'artifacts', title: 'ARTEFATOS', icon: 'folder' },
+      { key: 'artifacts', title: 'ARTEFATOS', icon: 'insert-drive-file' },
       { key: 'people', title: 'MEMBROS', icon: 'group' }
     ]
   };
@@ -27,8 +26,8 @@ export default class MyComponent extends React.Component {
   _handleIndexChange = index => this.setState({ index });
 
   _renderScene = BottomNavigation.SceneMap({
-    artifacts: ArtifactsRoute,
-    people: PeopleRoute
+    artifacts: Artifacts,
+    people: Members
   });
 
   render() {
