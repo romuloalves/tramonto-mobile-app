@@ -6,10 +6,13 @@ import Theme from '../../components/Theme';
 import MembersList from '../../components/List';
 import ListItem from '../../components/ListItem'
 
-
 import InstructionBanner from '../../components/InstructionBanner';
 
 import FabButton from '../../components/FabButton';
+
+import { getBridgeContext, ACTIONS } from '../../bridge-context';
+
+const BridgeContext = getBridgeContext();
 
 export default class TestList extends Component {
   state = {
@@ -54,34 +57,40 @@ export default class TestList extends Component {
     const { bannerVisible } = this.state;
 
     return (
-      <Theme>
-        <InstructionBanner visible={ bannerVisible }
-          onPress={ this.onBannerPress }>
-          Esta tela lista todos os artefatos adicionados ao teste.
-        </InstructionBanner>
-        <MembersList>
-          {
-            items.map((item, key) => {
-              const [backgroundColor, color] = stringToHexColor(item.description);
+      <BridgeContext.Consumer>
+        {
+          ({ send }) => (
+            <Theme>
+              <InstructionBanner visible={ bannerVisible }
+                onPress={ this.onBannerPress }>
+                Esta tela lista todos os artefatos adicionados ao teste.
+              </InstructionBanner>
+              <MembersList>
+                {
+                  items.map((item, key) => {
+                    const [backgroundColor, color] = stringToHexColor(item.description);
 
-              return (
-                <ListItem key={ key }
-                  title={ item.title }
-                  description={ item.description }
-                  onClick={ () => this.onListItemClick(item) }
-                  right={ props => <List.Icon {...props} icon="email" /> }
-                  left={ props => <Avatar.Text {...props}
-                    label={ item.title[0] }
-                    size={ 40 }
-                    color={ color }
-                    style={{ alignSelf: 'center', backgroundColor }} /> }></ListItem>
-              );
-            })
-          }
-        </MembersList>
-        <FabButton icon="person-add" onClick={ () => alert('new member') }>
-        </FabButton>
-      </Theme>
+                    return (
+                      <ListItem key={ key }
+                        title={ item.title }
+                        description={ item.description }
+                        onClick={ () => this.onListItemClick(item) }
+                        right={ props => <List.Icon {...props} icon="email" /> }
+                        left={ props => <Avatar.Text {...props}
+                          label={ item.title[0] }
+                          size={ 40 }
+                          color={ color }
+                          style={{ alignSelf: 'center', backgroundColor }} /> }></ListItem>
+                    );
+                  })
+                }
+              </MembersList>
+              <FabButton icon="person-add" onClick={ () => send(ACTIONS.ADD_MEMBER) }>
+              </FabButton>
+            </Theme>
+          )
+        }
+      </BridgeContext.Consumer>
     );
   }
 }

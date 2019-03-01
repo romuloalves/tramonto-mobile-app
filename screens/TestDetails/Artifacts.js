@@ -11,6 +11,10 @@ import InstructionBanner from '../../components/InstructionBanner';
 
 import FabButton from '../../components/FabButton';
 
+import { getBridgeContext, ACTIONS } from '../../bridge-context';
+
+const BridgeContext = getBridgeContext();
+
 export default class TestList extends Component {
   state = {
     bannerVisible: true
@@ -54,25 +58,31 @@ export default class TestList extends Component {
     const { bannerVisible } = this.state;
 
     return (
-      <Theme>
-        <InstructionBanner visible={ bannerVisible }
-          onPress={ this.onBannerPress }>
-          Esta tela lista todos os artefatos adicionados ao teste.
-        </InstructionBanner>
-        <ArtifactsList>
-          {
-            items.map((item, key) => (
-              <ListItem key={ key }
-                title={ item.title }
-                description={ item.description }
-                onClick={ () => this.onListItemClick(item) }
-                right={ props => <List.Icon {...props} icon="cloud-download" /> }></ListItem>
-            ))
-          }
-        </ArtifactsList>
-        <FabButton icon="cloud-upload" onClick={ () => alert('new artifact') }>
-        </FabButton>
-      </Theme>
+      <BridgeContext.Consumer>
+        {
+          ({ send }) => (
+            <Theme>
+              <InstructionBanner visible={ bannerVisible }
+                onPress={ this.onBannerPress }>
+                Esta tela lista todos os artefatos adicionados ao teste.
+              </InstructionBanner>
+              <ArtifactsList>
+                {
+                  items.map((item, key) => (
+                    <ListItem key={ key }
+                      title={ item.title }
+                      description={ item.description }
+                      onClick={ () => this.onListItemClick(item) }
+                      right={ props => <List.Icon {...props} icon="cloud-download" /> }></ListItem>
+                  ))
+                }
+              </ArtifactsList>
+              <FabButton icon="cloud-upload" onClick={ () => send(ACTIONS.ADD_FILE) }>
+              </FabButton>
+            </Theme>
+          )
+        }
+      </BridgeContext.Consumer>
     );
   }
 }

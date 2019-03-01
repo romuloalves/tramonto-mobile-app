@@ -1,0 +1,7 @@
+{
+  "name": "tramonto-one-server",
+  "version": "0.0.1",
+  "description": "node part of the project",
+  "main": "main.js",
+  "author": "romuloalves"
+}

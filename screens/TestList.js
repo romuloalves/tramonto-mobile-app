@@ -10,6 +10,10 @@ import InstructionBanner from '../components/InstructionBanner';
 
 import FabButton from '../components/FabButton';
 
+import { getBridgeContext, ACTIONS } from '../bridge-context';
+
+const BridgeContext = getBridgeContext();
+
 export default class TestList extends Component {
   static navigationOptions = {
     title: 'Testes'
@@ -57,25 +61,31 @@ export default class TestList extends Component {
     const { bannerVisible } = this.state;
 
     return (
-      <Theme>
-        <InstructionBanner visible={ bannerVisible }
-          onPress={ this.onBannerPress }>
-          Esta é sua tela inicial. Ela lista todos os testes no qual você está envolvido.
-        </InstructionBanner>
-        <TestsList>
-          {
-            items.map((item, key) => (
-              <ListItem key={ key }
-                title={ item.title }
-                description={ item.description }
-                onClick={ () => this.onListItemClick(item) }
-                right={ props => <List.Icon {...props} icon="star-border" /> }></ListItem>
-            ))
-          }
-        </TestsList>
-        <FabButton icon="add" onClick={ () => this.props.navigation.navigate('NewTest') }>
-        </FabButton>
-      </Theme>
+      <BridgeContext.Consumer>
+        {
+          ({ send }) => (
+            <Theme>
+              <InstructionBanner visible={ bannerVisible }
+                onPress={ this.onBannerPress }>
+                Esta é sua tela inicial. Ela lista todos os testes no qual você está envolvido.
+              </InstructionBanner>
+              <TestsList>
+                {
+                  items.map((item, key) => (
+                    <ListItem key={ key }
+                      title={ item.title }
+                      description={ item.description }
+                      onClick={ () => this.onListItemClick(item) }
+                      right={ props => <List.Icon {...props} icon="star-border" /> }></ListItem>
+                  ))
+                }
+              </TestsList>
+              <FabButton icon="add" onClick={ () => send(ACTIONS.ADD_TEST) }>
+              </FabButton>
+            </Theme>
+          )
+        }
+      </BridgeContext.Consumer>
     );
   }
 }
