@@ -4,9 +4,13 @@ import { createStackNavigator, createAppContainer } from 'react-navigation';
 import TestList from './screens/TestList';
 import TestDetails from './screens/TestDetails/TestDetails';
 
+// Models
+import NewTest from './screens/NewTest';
+
 const MainNavigator = createStackNavigator({
   Home: { screen: TestList },
-  Details: { screen: TestDetails }
+  Details: { screen: TestDetails },
+  NewTest: { screen: NewTest }
 }, {
   initialRouteName: 'Home',
   defaultNavigationOptions: {

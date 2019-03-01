@@ -73,7 +73,7 @@ export default class TestList extends Component {
             ))
           }
         </TestsList>
-        <FabButton icon="add" onClick={ () => alert('new test') }>
+        <FabButton icon="add" onClick={ () => this.props.navigation.navigate('NewTest') }>
         </FabButton>
       </Theme>
     );
