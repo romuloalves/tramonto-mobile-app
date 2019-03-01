@@ -1,9 +1,12 @@
-import React, { Component } from 'react';
-import { Text } from 'react-native';
+import * as React from 'react';
 
-import { Appbar } from 'react-native-paper';
+import { Appbar, BottomNavigation, Text } from 'react-native-paper';
 
-export default class TestDetails extends Component {
+const ArtifactsRoute = () => <Text>Artefatos</Text>;
+
+const PeopleRoute = () => <Text>Membros</Text>;
+
+export default class MyComponent extends React.Component {
   static navigationOptions = ({ navigation }) => ({
     title: navigation.state.params.title,
     headerRight: (
@@ -13,9 +16,31 @@ export default class TestDetails extends Component {
     )
   });
 
-  render () {
+  state = {
+    index: 0,
+    routes: [
+      { key: 'artifacts', title: 'ARTEFATOS', icon: 'folder' },
+      { key: 'people', title: 'MEMBROS', icon: 'group' }
+    ]
+  };
+
+  _handleIndexChange = index => this.setState({ index });
+
+  _renderScene = BottomNavigation.SceneMap({
+    artifacts: ArtifactsRoute,
+    people: PeopleRoute
+  });
+
+  render() {
     return (
-      <Text>Hello!</Text>
+      <BottomNavigation
+        barStyle={{ backgroundColor: 'rgb(245, 245, 245)' }}
+        activeColor="rgb(30, 45, 62)"
+        inactiveColor="rgba(85, 85, 85, 0.4)"
+        navigationState={this.state}
+        onIndexChange={this._handleIndexChange}
+        renderScene={this._renderScene}
+      />
     );
   }
 }
