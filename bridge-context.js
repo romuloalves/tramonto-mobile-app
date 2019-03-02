@@ -13,14 +13,14 @@ export function getBridgeContext(bridge) {
         action,
         payload
       };
-      const formattedData = JSON.stringify(data);
 
-      return singletonBridge.channel.send(formattedData);
+      return singletonBridge.channel.send(data);
     }
   });
 }
 
 export const ACTIONS = {
+  INIT_IPFS: 'init-ipfs',
   ADD_TEST: 'add-test',
   ADD_FILE: 'add-file',
   ADD_MEMBER: 'add-member'

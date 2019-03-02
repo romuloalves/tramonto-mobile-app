@@ -3,5 +3,14 @@
   "version": "0.0.1",
   "description": "node part of the project",
   "main": "main.js",
-  "author": "romuloalves"
+  "author": "romuloalves",
+  "scripts": {
+    "install": "patch-package"
+  },
+  "dependencies": {
+    "ipfs": "^0.34.4"
+  },
+  "devDependencies": {
+    "patch-package": "^6.0.5"
+  }
 }

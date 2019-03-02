@@ -5,7 +5,7 @@ import { createStackNavigator, createAppContainer } from 'react-navigation';
 
 import nodejs from 'nodejs-mobile-react-native';
 
-import { getBridgeContext } from './bridge-context';
+import { getBridgeContext, ACTIONS } from './bridge-context';
 
 // Screens
 import TestList from './screens/TestList';
@@ -60,7 +60,17 @@ export default class extends Component {
   }
 
   onMessage(msg) {
-    return alert(msg);
+    const { action } = msg;
+
+    if (action === 'node-initialized') {
+      setTimeout(() => {
+        nodejs.channel.send({
+          action: ACTIONS.INIT_IPFS
+        });
+      }, 10000);
+    }
+
+    return alert(JSON.stringify(msg));
   }
 
   render() {
