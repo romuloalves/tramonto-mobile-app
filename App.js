@@ -10,9 +10,10 @@ import { getBridgeContext } from './bridge-context';
 // Screens
 import TestList from './screens/TestList';
 import TestDetails from './screens/TestDetails/TestDetails';
-
-// Models
 import NewTest from './screens/NewTest';
+
+// Modals
+import Initialize from './screens/Initialize';
 
 const MainNavigator = createStackNavigator({
   Home: { screen: TestList },
@@ -30,9 +31,21 @@ const MainNavigator = createStackNavigator({
     }
   }
 });
+const RootStack = createStackNavigator({
+  Main: {
+    screen: MainNavigator
+  },
+  InitializeModal: {
+    screen: Initialize
+  }
+}, {
+  initialRouteName: 'InitializeModal',
+  mode: 'modal',
+  headerMode: 'none'
+});
+const App = createAppContainer(RootStack);
 
 const BridgeContext = getBridgeContext(nodejs);
-const App = createAppContainer(MainNavigator);
 
 export default class extends Component {
   constructor(props) {
