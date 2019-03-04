@@ -1,7 +1,23 @@
 const bridge = require('rn-bridge');
-const { resolve } = require('path');
+const { resolve, join } = require('path');
 const { mkdirSync, existsSync } = require('fs');
 const IPFS = require('ipfs');
+
+// const bridge = {
+//   channel: {
+//     send: (msg) => {
+//       console.log(msg);
+//     },
+//     on: () => {
+//       return;
+//     }
+//   },
+//   app: {
+//     datadir: () => {
+//       return __dirname;
+//     }
+//   }
+// }
 
 process.on('uncaughtException', err => {
   bridge.channel.send({
@@ -21,7 +37,7 @@ bridge.channel.send({
   payload: true
 });
 
-const appPath = resolve(bridge.app.datadir(), './.ipfs');
+const appPath = bridge.app.datadir();
 
 if (!existsSync(appPath)) {
   mkdirSync(appPath);
@@ -39,7 +55,6 @@ if (!existsSync(appPath)) {
 const ipfsConfig = {
   init: {
     bits: 1024,
-    emptyRepo: true,
     log: state => {
       return bridge.channel.send({
         action: 'ipfs-log',
