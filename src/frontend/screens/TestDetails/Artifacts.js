@@ -1,7 +1,6 @@
 
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 
-import Theme from '../../components/Theme';
 import ArtifactsList from '../../components/List';
 import ListItem from '../../components/ListItem'
 
@@ -61,7 +60,7 @@ export default class TestList extends Component {
       <BridgeContext.Consumer>
         {
           ({ send }) => (
-            <Theme>
+            <Fragment>
               <InstructionBanner visible={ bannerVisible }
                 onPress={ this.onBannerPress }>
                 Esta tela lista todos os artefatos adicionados ao teste.
@@ -79,7 +78,7 @@ export default class TestList extends Component {
               </ArtifactsList>
               <FabButton icon="cloud-upload" onClick={ () => send(ACTIONS.ADD_FILE) }>
               </FabButton>
-            </Theme>
+            </Fragment>
           )
         }
       </BridgeContext.Consumer>

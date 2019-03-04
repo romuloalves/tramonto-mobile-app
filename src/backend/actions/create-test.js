@@ -10,17 +10,22 @@ module.exports = async function createTest({ name, description }, ipfs) {
       path: '/metadata.json',
       content: Buffer.from(createMetadataFileContent(name, description))
     };
-    // const artifactsFile = {
-    //   path: '/artifacts.json',
-    //   content: Buffer.from('[]')
-    // };
-    // const peopleFile = {
-    //   path: '/people.json',
-    //   content: Buffer.from('[]')
-    // };
+    const artifactsFile = {
+      path: '/artifacts.json',
+      content: Buffer.from('[]')
+    };
+    const peopleFile = {
+      path: '/people.json',
+      content: Buffer.from('[]')
+    };
     const result = await ipfs.add([
-      metadataFile
-    ]);
+      metadataFile,
+      artifactsFile,
+      peopleFile
+    ], {
+      recursive: true,
+      wrapWithDirectory: true
+    });
 
     const data = {
       action: 'create-test-success',

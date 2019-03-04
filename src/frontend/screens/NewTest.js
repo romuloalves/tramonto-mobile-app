@@ -3,8 +3,6 @@ import { View } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
 import { StackActions, NavigationActions } from 'react-navigation';
 
-import Theme from '../components/Theme';
-
 import * as Tests from '../storage/tests';
 
 import { getBridgeContext } from '../bridge-context';
@@ -75,38 +73,36 @@ class NewTestScreen extends Component {
     const { buttonText, loading } = this.state;
 
     return (
-      <Theme>
-        <View style={{ paddingLeft: 20, paddingRight: 20, paddingTop: 10, paddingBottom: 20, display: 'flex', flex: 1, justifyContent: 'space-between' }}>
-          <View>
-            <TextInput
-              label="Nome"
-              value={ this.state.name }
-              onChangeText={ name => this.setState({ name }) }
-              mode="outlined"
-              style={{ backgroundColor: '#fff' }}
-              maxLength={ 6 }
-              autoCapitalize="characters"
-              returnKeyType="next"
-            />
-            <TextInput
-              label="Descrição"
-              value={ this.state.description }
-              onChangeText={ description => this.setState({ description }) }
-              multiline={ true }
-              mode="outlined"
-              style={{ marginTop: 20, backgroundColor: '#fff' }}
-            />
-          </View>
-          <View>
-            <Button mode="contained"
-              loading={ loading }
-              style={{ backgroundColor: 'rgb(220, 64, 69)', height: 45, justifyContent: 'center' }}
-              onPress={ () => this.createNewTest() }>
-              { buttonText }
-            </Button>
-          </View>
+      <View style={{ paddingLeft: 20, paddingRight: 20, paddingTop: 10, paddingBottom: 20, display: 'flex', flex: 1, justifyContent: 'space-between' }}>
+        <View>
+          <TextInput
+            label="Nome"
+            value={ this.state.name }
+            onChangeText={ name => this.setState({ name }) }
+            mode="outlined"
+            style={{ backgroundColor: '#fff' }}
+            maxLength={ 6 }
+            autoCapitalize="characters"
+            returnKeyType="next"
+          />
+          <TextInput
+            label="Descrição"
+            value={ this.state.description }
+            onChangeText={ description => this.setState({ description }) }
+            multiline={ true }
+            mode="outlined"
+            style={{ marginTop: 20, backgroundColor: '#fff' }}
+          />
         </View>
-      </Theme>
+        <View>
+          <Button mode="contained"
+            loading={ loading }
+            style={{ backgroundColor: 'rgb(220, 64, 69)', height: 45, justifyContent: 'center' }}
+            onPress={ () => this.createNewTest() }>
+            { buttonText }
+          </Button>
+        </View>
+      </View>
     );
   }
 }

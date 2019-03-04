@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-
 import { createStackNavigator, createAppContainer } from 'react-navigation';
+import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 
 import nodejs from 'nodejs-mobile-react-native';
 
@@ -42,6 +42,15 @@ const App = createAppContainer(RootStack);
 
 const BridgeContext = getBridgeContext(nodejs);
 
+const theme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: 'rgb(30, 45, 62)',
+    accent: 'rgb(220, 64, 69)'
+  }
+};
+
 export default class extends Component {
   constructor(props) {
     super(props);
@@ -53,9 +62,11 @@ export default class extends Component {
 
   render() {
     return (
-      <BridgeContext.Provider>
-        <App />
-      </BridgeContext.Provider>
+      <PaperProvider theme={ theme }>
+        <BridgeContext.Provider>
+          <App />
+        </BridgeContext.Provider>
+      </PaperProvider>
     );
   }
 }

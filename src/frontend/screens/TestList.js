@@ -1,7 +1,6 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { AsyncStorage } from 'react-native';
 
-import Theme from '../components/Theme';
 import TestsList from '../components/List';
 import ListItem from '../components/ListItem';
 
@@ -80,7 +79,7 @@ export default class TestListScreen extends Component {
       <BridgeContext.Consumer>
         {
           ({}) => (
-            <Theme>
+            <Fragment>
               {
                 showBanner && (
                   <InstructionBanner visible={ bannerVisible }
@@ -103,7 +102,7 @@ export default class TestListScreen extends Component {
               </TestsList>
               <FabButton icon="add" onClick={ () => this.onNewTestClick() }>
               </FabButton>
-            </Theme>
+            </Fragment>
           )
         }
       </BridgeContext.Consumer>
