@@ -25,6 +25,9 @@ cp -r ./src/backend ./nodejs-assets;
 mv ./nodejs-assets/backend ./nodejs-assets/nodejs-project;
 
 echo "Installing modules...";
-cd ./nodejs-assets/nodejs-project && npm install && cd ../..;
+cd ./nodejs-assets/nodejs-project && yarn && cd ../..;
+
+echo "Updating package-lock.json";
+cp ./nodejs-assets/nodejs-project/yarn.lock ./src/backend/yarn.lock
 
 echo "Done.";

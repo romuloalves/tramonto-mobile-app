@@ -20,6 +20,7 @@ const IPFS = require('ipfs');
 // }
 
 process.on('uncaughtException', err => {
+  console.error('=> Exception', err);
   bridge.channel.send({
     action: 'exception',
     payload: err.message
@@ -37,32 +38,31 @@ bridge.channel.send({
   payload: true
 });
 
+console.log('=> Node initialized.');
+
 const appPath = bridge.app.datadir();
 
-if (!existsSync(appPath)) {
-  mkdirSync(appPath);
-  bridge.channel.send({
-    action: 'ipfs-repo-created',
-    payload: true
-  });
-} else {
-  bridge.channel.send({
-    action: 'ipfs-repo-already-exists',
-    payload: true
-  });
-}
+// if (!existsSync(appPath)) {
+//   mkdirSync(appPath);
+//   bridge.channel.send({
+//     action: 'ipfs-repo-created',
+//     payload: true
+//   });
+// } else {
+//   bridge.channel.send({
+//     action: 'ipfs-repo-already-exists',
+//     payload: true
+//   });
+// }
 
 const ipfsConfig = {
   init: {
     bits: 1024,
     log: state => {
-      return bridge.channel.send({
-        action: 'ipfs-log',
-        payload: state
-      });
+      console.log('=> IPFS-log', state);
     }
   },
-  repo: appPath,
+  // repo: appPath,
   EXPERIMENTAL: {
     dht: false, // TODO: BRICKS COMPUTER
     relay: {
@@ -81,23 +81,29 @@ const ipfsConfig = {
   }
 };
 
-const ipfs = new IPFS(ipfsConfig);
+try {
+  const ipfs = new IPFS(ipfsConfig);
 
-bridge.channel.send({
-  action: 'ipfs-created',
-  payload: true
-});
-
-ipfs.on('ready', function onIpfsReady() {
-  return bridge.channel.send({
-    action: 'ipfs-ready',
+  bridge.channel.send({
+    action: 'ipfs-created',
     payload: true
   });
-});
-
-ipfs.on('error', function onIpfsError(err) {
-  return bridge.channel.send({
-    action: 'ipfs-error',
-    payload: err
-  })
-});
+  
+  ipfs.on('ready', function onIpfsReady() {
+    console.log('=> IPFS Ready.');
+    return bridge.channel.send({
+      action: 'ipfs-ready',
+      payload: true
+    });
+  });
+  
+  ipfs.on('error', function onIpfsError(err) {
+    console.error('=> IPFS ERROR', err);
+    return bridge.channel.send({
+      action: 'ipfs-error',
+      payload: err
+    })
+  });
+} catch (err) {
+  console.error('=> IPFS-initialization-error', err);
+}
