@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { AsyncStorage } from 'react-native';
 
 import Theme from '../components/Theme';
 import TestsList from '../components/List';
@@ -10,29 +11,53 @@ import InstructionBanner from '../components/InstructionBanner';
 
 import FabButton from '../components/FabButton';
 
-import { getBridgeContext, ACTIONS } from '../bridge-context';
+import * as Tests from '../storage/tests';
+
+import { getBridgeContext } from '../bridge-context';
 
 const BridgeContext = getBridgeContext();
 
-export default class TestList extends Component {
+// Constants
+const BANNER_KEY = 'banner-TestList';
+
+export default class TestListScreen extends Component {
   static navigationOptions = {
     title: 'Testes'
   };
 
   state = {
-    bannerVisible: true
+    showBanner: false,
+    bannerVisible: false,
+    tests: []
   };
 
   constructor(props) {
     super(props);
 
     this.onListItemClick = this.onListItemClick.bind(this);
+    this.onNewTestClick = this.onNewTestClick.bind(this);
     this.onBannerPress = this.onBannerPress.bind(this);
+  }
+
+  async componentWillMount() {
+    const newState = {
+      tests: await Tests.getTests()
+    };
+    const banner = await AsyncStorage.getItem(BANNER_KEY);
+
+    if (!banner) {
+      newState.showBanner = true;
+      newState.bannerVisible = true;
+    }
+
+    return this.setState(newState);
   }
 
   onBannerPress() {
     return this.setState({
       bannerVisible: false
+    }, () => {
+      AsyncStorage.setItem(BANNER_KEY, 'true');
     });
   }
 
@@ -42,45 +67,41 @@ export default class TestList extends Component {
     return;
   }
 
-  render() {
-    const items = [
-      {
-        title: 'TR0001',
-        description: 'Descrição do teste TR0001, relacionado ao software ABC'
-      },
-      {
-        title: 'TR0002',
-        description: 'O teste TR0002 é relacionado a funcionalidade 123 que tem por objetivo a manutenção de...'
-      },
-      {
-        title: 'TR0003',
-        description: 'Teste de intrusão na rede wireless da empresa XYZ'
-      },
-    ];
+  onNewTestClick() {
+    this.props.navigation.navigate('NewTest');
 
-    const { bannerVisible } = this.state;
+    return;
+  }
+
+  render() {
+    const { tests, bannerVisible, showBanner } = this.state;
 
     return (
       <BridgeContext.Consumer>
         {
-          ({ send }) => (
+          ({}) => (
             <Theme>
-              <InstructionBanner visible={ bannerVisible }
-                onPress={ this.onBannerPress }>
-                Esta é sua tela inicial. Ela lista todos os testes no qual você está envolvido.
-              </InstructionBanner>
+              {
+                showBanner && (
+                  <InstructionBanner visible={ bannerVisible }
+                    onPress={ this.onBannerPress }>
+                    Esta é sua tela inicial. Ela lista todos os testes no qual você está envolvido.
+                  </InstructionBanner>
+                )
+              }
+
               <TestsList>
                 {
-                  items.map((item, key) => (
-                    <ListItem key={ key }
-                      title={ item.title }
+                  tests.map(item => (
+                    <ListItem key={ item.hash }
+                      title={ item.name }
                       description={ item.description }
                       onClick={ () => this.onListItemClick(item) }
                       right={ props => <List.Icon {...props} icon="star-border" /> }></ListItem>
                   ))
                 }
               </TestsList>
-              <FabButton icon="add" onClick={ () => send(ACTIONS.ADD_TEST) }>
+              <FabButton icon="add" onClick={ () => this.onNewTestClick() }>
               </FabButton>
             </Theme>
           )

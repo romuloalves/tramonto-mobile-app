@@ -1,6 +1,7 @@
 const bridge = require('rn-bridge');
 const { resolve, join } = require('path');
 const { mkdirSync, existsSync } = require('fs');
+const debug = require('debug')('nodejs:main');
 const IPFS = require('ipfs');
 
 // const bridge = {
@@ -19,18 +20,14 @@ const IPFS = require('ipfs');
 //   }
 // }
 
+const executeAction = require('./actions');
+
 process.on('uncaughtException', err => {
-  console.error('=> Exception', err);
+  debug('uncaughtException', err);
   bridge.channel.send({
     action: 'exception',
     payload: err.message
   });
-});
-
-bridge.channel.on('message', function(msg) {
-  const { action } = msg;
-
-  bridge.channel.send(msg);
 });
 
 bridge.channel.send({
@@ -38,31 +35,15 @@ bridge.channel.send({
   payload: true
 });
 
-console.log('=> Node initialized.');
-
-const appPath = bridge.app.datadir();
-
-// if (!existsSync(appPath)) {
-//   mkdirSync(appPath);
-//   bridge.channel.send({
-//     action: 'ipfs-repo-created',
-//     payload: true
-//   });
-// } else {
-//   bridge.channel.send({
-//     action: 'ipfs-repo-already-exists',
-//     payload: true
-//   });
-// }
+debug('Node initialized.');
 
 const ipfsConfig = {
   init: {
     bits: 1024,
     log: state => {
-      console.log('=> IPFS-log', state);
+      debug('IPFS Log.', state);
     }
   },
-  // repo: appPath,
   EXPERIMENTAL: {
     dht: false, // TODO: BRICKS COMPUTER
     relay: {
@@ -84,26 +65,38 @@ const ipfsConfig = {
 try {
   const ipfs = new IPFS(ipfsConfig);
 
-  bridge.channel.send({
-    action: 'ipfs-created',
-    payload: true
-  });
-  
   ipfs.on('ready', function onIpfsReady() {
-    console.log('=> IPFS Ready.');
+    debug('IPFS Ready.');
+
+    bridge.channel.on('message', function(msg) {
+      return executeAction(msg, ipfs, function executeActionCallback(err, responseMessage) {
+        if (err) {
+          debug('IPFS Action Error.', err);
+
+          return bridge.channel.send({
+            action: 'ipfs-action-error',
+            payload: err
+          });
+        }
+
+        return bridge.channel.send(responseMessage);
+      });
+    });
+
     return bridge.channel.send({
       action: 'ipfs-ready',
       payload: true
     });
   });
-  
+
   ipfs.on('error', function onIpfsError(err) {
-    console.error('=> IPFS ERROR', err);
+    debug('IPFS Error.', err);
+
     return bridge.channel.send({
       action: 'ipfs-error',
       payload: err
     })
   });
 } catch (err) {
-  console.error('=> IPFS-initialization-error', err);
+  debug('IPFS Initialization Error.', err);
 }

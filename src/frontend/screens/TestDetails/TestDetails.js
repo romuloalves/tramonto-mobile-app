@@ -7,7 +7,7 @@ import Members from './Members';
 
 export default class MyComponent extends React.Component {
   static navigationOptions = ({ navigation }) => ({
-    title: navigation.state.params.title,
+    title: navigation.state.params.name,
     headerRight: (
       <Appbar.Action icon="share"
         color="#fff"
