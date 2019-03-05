@@ -35,7 +35,7 @@ const RootStack = createStackNavigator({
   Main: { screen: MainNavigator },
   InitializeModal: { screen: Initialize }
 }, {
-  initialRouteName: 'Main',
+  initialRouteName: 'InitializeModal',
   mode: 'modal',
   headerMode: 'none'
 });

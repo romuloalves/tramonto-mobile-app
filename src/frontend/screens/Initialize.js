@@ -10,14 +10,27 @@ const BridgeContext = getBridgeContext();
 export default class InitializeScreen extends Component {
   static contextType = BridgeContext;
 
+  state = {
+    signalTimer: null
+  };
+
   componentWillMount() {
     this.context.onInitializationReady(() => {
-      this.props.navigation.navigate('Main');
+      clearInterval(this.state.signalTimer);
+      this.setState({ signalTimer: null }, () => {
+        this.props.navigation.navigate('Main');
+      });
     });
 
     this.context.onInitializationError(() => {
       alert('Error');
     });
+  }
+
+  componentDidMount() {
+    this.state.signalTimer = setInterval(() => {
+      this.context.askForState();
+    }, 1000);
   }
 
   render() {

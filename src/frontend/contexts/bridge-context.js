@@ -40,6 +40,10 @@ const contextFunctions = {
     globalMessageCallbacks['ipfs-error'] = callback;
   },
 
+  askForState() {
+    return sendMessage('send-state');
+  },
+
   // Tests - Creation
   createTest(name, description) {
     return sendMessage('create-test', {
@@ -49,6 +53,16 @@ const contextFunctions = {
   },
   onCreateTestMessage(callback) {
     const eventName = 'create-test-success';
+
+    if (callback) {
+      globalMessageCallbacks[eventName] = callback;
+      return;
+    }
+
+    delete globalMessageCallbacks[eventName];
+  },
+  onCreateTestProgress(callback) {
+    const eventName = 'create-test-progress';
 
     if (callback) {
       globalMessageCallbacks[eventName] = callback;

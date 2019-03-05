@@ -1,7 +1,9 @@
 const { decrypt } = require('../utils/crypto');
+const { resolveIpns } = require('../utils/ipfs');
 
 module.exports = async function readTest({ hash, secret }, ipfs) {
-  const files = await ipfs.get(`/ipfs/${hash}`);
+  const ipfsAddr = await resolveIpns(hash, ipfs);
+  const files = await ipfs.get(ipfsAddr);
   const response = {
     metadata: {},
     artifacts: [],

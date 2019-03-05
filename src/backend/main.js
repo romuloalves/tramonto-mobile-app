@@ -1,29 +1,9 @@
 const bridge = require('rn-bridge');
-const { resolve, join } = require('path');
-const { mkdirSync, existsSync } = require('fs');
-const debug = require('debug')('nodejs:main');
 const IPFS = require('ipfs');
-
-// const bridge = {
-//   channel: {
-//     send: (msg) => {
-//       console.log(msg);
-//     },
-//     on: () => {
-//       return;
-//     }
-//   },
-//   app: {
-//     datadir: () => {
-//       return __dirname;
-//     }
-//   }
-// }
 
 const executeAction = require('./actions');
 
 process.on('uncaughtException', err => {
-  debug('uncaughtException', err);
   bridge.channel.send({
     action: 'exception',
     payload: err.message
@@ -35,14 +15,10 @@ bridge.channel.send({
   payload: true
 });
 
-debug('Node initialized.');
-
 const ipfsConfig = {
+  pass: 'tramontooneisthebestever',
   init: {
-    bits: 1024,
-    log: state => {
-      debug('IPFS Log.', state);
-    }
+    bits: 1024
   },
   EXPERIMENTAL: {
     dht: false, // TODO: BRICKS COMPUTER
@@ -54,25 +30,22 @@ const ipfsConfig = {
       }
     },
     pubsub: false
-  },
-  connectionManager: {
-    maxPeers: 10,
-    minPeers: 2,
-    pollInterval: 20000 // ms
   }
+  // ,
+  // connectionManager: {
+  //   maxPeers: 10,
+  //   minPeers: 2,
+  //   pollInterval: 20000 // ms
+  // }
 };
 
 try {
   const ipfs = new IPFS(ipfsConfig);
 
   ipfs.on('ready', function onIpfsReady() {
-    debug('IPFS Ready.');
-
     bridge.channel.on('message', function(msg) {
       return executeAction(msg, ipfs, function executeActionCallback(err, responseMessage) {
         if (err) {
-          debug('IPFS Action Error.', err);
-
           return bridge.channel.send({
             action: 'ipfs-action-error',
             payload: err.message || 'General error'
@@ -90,8 +63,6 @@ try {
   });
 
   ipfs.on('error', function onIpfsError(err) {
-    debug('IPFS Error.', err);
-
     return bridge.channel.send({
       action: 'ipfs-error',
       payload: err
@@ -108,5 +79,5 @@ try {
     await ipfs.start();
   });
 } catch (err) {
-  debug('IPFS Initialization Error.', err);
+  console.error('IPFS Initialization Error.', err);
 }

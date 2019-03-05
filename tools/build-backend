@@ -10,24 +10,26 @@ function onFailure() {
   exit 1
 }
 
-echo "Setting up...";
+echo -en "Setting up...";
 mkdir -p ./nodejs-assets;
 rm -rf ./nodejs-assets/nodejs-project;
 if [ -f ./nodejs-assets/BUILD_NATIVE_MODULES.txt ]
 then
-  echo "Build Native Modules on";
+  echo -en " done.\n";
 else
   echo '1' > ./nodejs-assets/BUILD_NATIVE_MODULES.txt;
-  echo "Set Build Native Modules on";
+  echo -en " done.\n";
 fi
 
+echo -en "Copying source code...";
 cp -r ./src/backend ./nodejs-assets;
 mv ./nodejs-assets/backend ./nodejs-assets/nodejs-project;
+echo -en " done.\n";
 
-echo "Installing modules...";
+echo -en "Installing modules...";
 cd ./nodejs-assets/nodejs-project && yarn && cd ../..;
+echo -en " done.\n";
 
-echo "Updating package-lock.json";
+echo -en "Updating package-lock.json...";
 cp ./nodejs-assets/nodejs-project/yarn.lock ./src/backend/yarn.lock
-
-echo "Done.";
+echo -en " done.\n";

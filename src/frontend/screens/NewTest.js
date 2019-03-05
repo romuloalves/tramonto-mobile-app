@@ -1,6 +1,6 @@
-import React, { Component, createContext } from 'react';
+import React, { Component } from 'react';
 import { View, StyleSheet } from 'react-native';
-import { TextInput, Button } from 'react-native-paper';
+import { TextInput, Button, Dialog, ActivityIndicator, Headline } from 'react-native-paper';
 import { StackActions, NavigationActions } from 'react-navigation';
 
 import * as Tests from '../storage/tests';
@@ -19,7 +19,8 @@ class NewTestScreen extends Component {
     name: '',
     description: '',
     loading: false,
-    buttonText: 'Publicar'
+    buttonText: 'Publicar',
+    publishingStatus: null
   };
 
   constructor(props) {
@@ -30,10 +31,17 @@ class NewTestScreen extends Component {
 
   componentDidMount() {
     const bridgeContext = this.props.bridgeContext;
-    const snackContext = this.props.snackbarContext;
+
+    bridgeContext.onCreateTestProgress(payload => {
+      return this.setState({
+        publishingStatus: payload
+      });
+    });
 
     bridgeContext.onCreateTestMessage(payload => {
-      this.setState({ loading: false }, async () => {
+      this.setState({ loading: false, publishingStatus: null }, async () => {
+        const snackContext = this.props.snackbarContext;
+
         snackContext.setSnackBarText('Teste publicado!');
         snackContext.toggleSnackBar(true);
 
@@ -64,24 +72,24 @@ class NewTestScreen extends Component {
   componentWillUnmount() {
     const bridgeContext = this.props.bridgeContext;
 
+    bridgeContext.onCreateTestProgress();
     bridgeContext.onCreateTestMessage();
   }
 
   createNewTest() {
-    const bridgeContext = this.props.bridgeContext;
-
     this.setState({
       loading: true,
       buttonText: 'Publicando'
     }, () => {
       const { name, description } = this.state;
+      const bridgeContext = this.props.bridgeContext;
 
       bridgeContext.createTest(name, description);
     });
   }
 
   render() {
-    const { buttonText, loading } = this.state;
+    const { buttonText, loading, publishingStatus } = this.state;
 
     return (
       <View style={ styles.view }>
@@ -114,6 +122,16 @@ class NewTestScreen extends Component {
             { buttonText }
           </Button>
         </View>
+        <Dialog visible={ publishingStatus !== null }
+          dismissable={ false }>
+          <Dialog.Content>
+            <ActivityIndicator animating={ true }
+              color="rgb(30, 45, 62)"
+              size="large">
+            </ActivityIndicator>
+            <Headline style={{ textAlign: 'center', marginTop: 20 }}>{ publishingStatus }...</Headline>
+          </Dialog.Content>
+        </Dialog>
       </View>
     );
   }

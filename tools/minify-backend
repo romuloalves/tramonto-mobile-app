@@ -33,6 +33,12 @@ echo -en " done.\n";
 
 echo -en "Converting to Node 8 with babel...";
 ./node_modules/.bin/babel ./index.js -o ./main.js
+echo -en " done.\n";
+
+echo -en "Replacing node_modules folder...";
+rm -rf ./node_modules/;
+yarn install --production;
+echo -en " done.\n";
 
 # cd ../..;
 # echo -en "Replacing node_modules folder...";
