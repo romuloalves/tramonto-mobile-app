@@ -5,8 +5,6 @@ import stringToHexColor from 'string-to-hex-color';
 import MembersList from '../../components/List';
 import ListItem from '../../components/ListItem'
 
-import InstructionBanner from '../../components/InstructionBanner';
-
 import FabButton from '../../components/FabButton';
 
 import { getBridgeContext, ACTIONS } from '../../bridge-context';
@@ -22,13 +20,6 @@ export default class TestList extends Component {
     super(props);
 
     this.onListItemClick = this.onListItemClick.bind(this);
-    this.onBannerPress = this.onBannerPress.bind(this);
-  }
-
-  onBannerPress() {
-    return this.setState({
-      bannerVisible: false
-    });
   }
 
   onListItemClick(item) {
@@ -38,21 +29,7 @@ export default class TestList extends Component {
   }
 
   render() {
-    const items = [
-      {
-        title: 'Tim Haggins',
-        description: 'membro_um@domain.tld'
-      },
-      {
-        title: 'Rodolfo Joslin',
-        description: 'membro_dois@domain.tld'
-      },
-      {
-        title: 'Sima Pugsley',
-        description: 'membro_tres@domain.tld'
-      },
-    ];
-
+    const items = this.props.items;
     const { bannerVisible } = this.state;
 
     return (
@@ -60,10 +37,6 @@ export default class TestList extends Component {
         {
           ({ send }) => (
             <Fragment>
-              <InstructionBanner visible={ bannerVisible }
-                onPress={ this.onBannerPress }>
-                Esta tela lista todos os artefatos adicionados ao teste.
-              </InstructionBanner>
               <MembersList>
                 {
                   items.map((item, key) => {
@@ -71,12 +44,12 @@ export default class TestList extends Component {
 
                     return (
                       <ListItem key={ key }
-                        title={ item.title }
+                        title={ item.name }
                         description={ item.description }
                         onClick={ () => this.onListItemClick(item) }
                         right={ props => <List.Icon {...props} icon="email" /> }
                         left={ props => <Avatar.Text {...props}
-                          label={ item.title[0] }
+                          label={ item.name[0] }
                           size={ 40 }
                           color={ color }
                           style={{ alignSelf: 'center', backgroundColor }} /> }></ListItem>

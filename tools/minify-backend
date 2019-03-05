@@ -43,10 +43,11 @@ echo -en "Converting to Node 8 with babel...";
 # cd ./nodejs-assets/nodejs-project;
 echo -en "Removing other unused files...";
 rm ./index.js;
+rm -rf ./actions/;
+rm -rf ./utils/;
 rm ./babel.config.js;
 rm -rf ./patches/;
 rm ./yarn.lock;
-# rm -rf ./node_modules/;
 
 cd ../../;
 

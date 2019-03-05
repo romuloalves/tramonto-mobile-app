@@ -26,6 +26,11 @@ function onMessage(msg) {
 }
 
 const contextFunctions = {
+  // General error
+  onActionErrorMessage(callback) {
+    globalMessageCallbacks['ipfs-action-error'] = callback;
+  },
+
   // Initialization
   onInitializationReady(callback) {
     globalMessageCallbacks['ipfs-ready'] = callback;
@@ -43,12 +48,32 @@ const contextFunctions = {
     });
   },
   onCreateTestMessage(callback) {
+    const eventName = 'create-test-success';
+
     if (callback) {
-      globalMessageCallbacks['create-test-success'] = callback;
+      globalMessageCallbacks[eventName] = callback;
       return;
     }
 
-    delete globalMessageCallbacks['create-test-success'];
+    delete globalMessageCallbacks[eventName];
+  },
+
+  // Tests - Read
+  readTest(hash, secret) {
+    return sendMessage('read-test', {
+      hash,
+      secret
+    });
+  },
+  onReadTestMessage(callback) {
+    const eventName = 'read-test-success';
+
+    if (callback) {
+      globalMessageCallbacks[eventName] = callback;
+      return;
+    }
+
+    delete globalMessageCallbacks[eventName];
   }
 };
 
@@ -59,8 +84,12 @@ export function getBridgeContext(bridge) {
 
   if (singletonBridge) {
     singletonBridge.channel.addListener('message', onMessage, this);
-  }
+    contextFunctions.onActionErrorMessage(msg => {
+      const jsMsg = JSON.stringify(msg);
 
+      return alert(jsMsg);
+    });
+  }
 
   return createContext(contextFunctions);
 }

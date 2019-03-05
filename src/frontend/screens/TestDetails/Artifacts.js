@@ -6,8 +6,6 @@ import ListItem from '../../components/ListItem'
 
 import { List } from 'react-native-paper';
 
-import InstructionBanner from '../../components/InstructionBanner';
-
 import FabButton from '../../components/FabButton';
 
 import { getBridgeContext, ACTIONS } from '../../bridge-context';
@@ -23,13 +21,6 @@ export default class TestList extends Component {
     super(props);
 
     this.onListItemClick = this.onListItemClick.bind(this);
-    this.onBannerPress = this.onBannerPress.bind(this);
-  }
-
-  onBannerPress() {
-    return this.setState({
-      bannerVisible: false
-    });
   }
 
   onListItemClick(item) {
@@ -39,21 +30,7 @@ export default class TestList extends Component {
   }
 
   render() {
-    const items = [
-      {
-        title: 'Artefato 1',
-        description: 'Executor Um'
-      },
-      {
-        title: 'Artefato 2',
-        description: 'Executor Um'
-      },
-      {
-        title: 'Artefato 3',
-        description: 'Executor Dois'
-      },
-    ];
-
+    const items = this.props.items;
     const { bannerVisible } = this.state;
 
     return (
@@ -61,15 +38,11 @@ export default class TestList extends Component {
         {
           ({ send }) => (
             <Fragment>
-              <InstructionBanner visible={ bannerVisible }
-                onPress={ this.onBannerPress }>
-                Esta tela lista todos os artefatos adicionados ao teste.
-              </InstructionBanner>
               <ArtifactsList>
                 {
                   items.map((item, key) => (
                     <ListItem key={ key }
-                      title={ item.title }
+                      title={ item.name }
                       description={ item.description }
                       onClick={ () => this.onListItemClick(item) }
                       right={ props => <List.Icon {...props} icon="cloud-download" /> }></ListItem>

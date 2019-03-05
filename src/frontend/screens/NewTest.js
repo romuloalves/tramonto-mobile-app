@@ -34,7 +34,8 @@ class NewTestScreen extends Component {
         const newTest = {
           name,
           description,
-          hash: payload.hash
+          hash: payload.hash,
+          secret: payload.secret
         };
 
         await Tests.addTest(newTest);
@@ -84,7 +85,7 @@ class NewTestScreen extends Component {
             maxLength={ 6 }
             autoCapitalize="characters"
             returnKeyType="next"
-          />
+            disabled={ loading } />
           <TextInput
             label="Descrição"
             value={ this.state.description }
@@ -92,13 +93,14 @@ class NewTestScreen extends Component {
             multiline={ true }
             mode="outlined"
             style={{ marginTop: 20, backgroundColor: '#fff' }}
-          />
+            disabled={ loading } />
         </View>
         <View>
           <Button mode="contained"
             loading={ loading }
             style={{ backgroundColor: 'rgb(220, 64, 69)', height: 45, justifyContent: 'center' }}
-            onPress={ () => this.createNewTest() }>
+            onPress={ () => this.createNewTest() }
+            disabled={ loading }>
             { buttonText }
           </Button>
         </View>

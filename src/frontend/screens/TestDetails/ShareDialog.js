@@ -14,10 +14,12 @@ export default function ShareDialog({ name, hash, secret, onClose }) {
         <Title>Hash</Title>
         <Text>{ hash }</Text>
         <Button style={ styles.button }
+          icon="content-copy"
           onPress={ () => copyToClipboard(hash) }>Copiar</Button>
         <Title>Chave</Title>
         <Text>{ secret }</Text>
         <Button style={ styles.button }
+          icon="content-copy"
           onPress={ () => copyToClipboard(secret) }>Copiar</Button>
       </Dialog.Content>
       <Dialog.Actions>

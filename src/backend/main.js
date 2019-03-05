@@ -75,7 +75,7 @@ try {
 
           return bridge.channel.send({
             action: 'ipfs-action-error',
-            payload: err
+            payload: err.message || 'General error'
           });
         }
 
@@ -96,6 +96,16 @@ try {
       action: 'ipfs-error',
       payload: err
     })
+  });
+
+  bridge.app.on('pause', async pauseLock => {
+    await ipfs.stop();
+
+    pauseLock.release();
+  });
+
+  bridge.app.on('resume', async () => {
+    await ipfs.start();
   });
 } catch (err) {
   debug('IPFS Initialization Error.', err);

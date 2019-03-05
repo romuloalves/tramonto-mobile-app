@@ -6,7 +6,11 @@ import ShareDialog from './ShareDialog';
 import Artifacts from './Artifacts';
 import Members from './Members';
 
-export default class MyComponent extends Component {
+import { getBridgeContext } from '../../bridge-context';
+
+const BridgeContext = getBridgeContext();
+
+class TestDetailsScreen extends Component {
   static navigationOptions = ({ navigation }) => ({
     title: navigation.state.params.name,
     headerRight: (
@@ -22,7 +26,9 @@ export default class MyComponent extends Component {
     routes: [
       { key: 'artifacts', title: 'ARTEFATOS', icon: 'insert-drive-file' },
       { key: 'people', title: 'MEMBROS', icon: 'group' }
-    ]
+    ],
+    artifacts: [],
+    people: []
   };
 
   constructor(props) {
@@ -32,18 +38,39 @@ export default class MyComponent extends Component {
     this.hideDialog = this.hideDialog.bind(this);
   }
 
+  componentWillUnmount() {
+    this.context.onReadTestMessage();
+  }
+
   componentDidMount() {
     this.props.navigation.setParams({
       showShareDialog: this.showDialog
     });
+
+    this.context.onReadTestMessage(payload => {
+      const newState = {
+        artifacts: payload.artifacts,
+        people: payload.people
+      };
+
+      return this.setState(newState);
+    });
+
+    const { hash, secret } = this.props.navigation.state.params;
+
+    this.context.readTest(hash, secret);
   }
 
   _handleIndexChange = index => this.setState({ index });
 
-  _renderScene = BottomNavigation.SceneMap({
-    artifacts: Artifacts,
-    people: Members
-  });
+  _renderScene = ({ route }) => {
+    switch (route.key) {
+      case 'artifacts':
+        return <Artifacts items={ this.state.artifacts } />;
+      case 'people':
+        return <Members items={ this.state.people } />
+    }
+  };
 
   showDialog() {
     return this.setState({
@@ -76,11 +103,14 @@ export default class MyComponent extends Component {
           barStyle={{ backgroundColor: 'rgb(245, 245, 245)' }}
           activeColor="rgb(30, 45, 62)"
           inactiveColor="rgba(85, 85, 85, 0.4)"
-          navigationState={this.state}
-          onIndexChange={this._handleIndexChange}
-          renderScene={this._renderScene}
-        />
+          navigationState={ this.state }
+          onIndexChange={ this._handleIndexChange }
+          renderScene={ this._renderScene } />
       </Fragment>
     );
   }
 }
+
+TestDetailsScreen.contextType = BridgeContext;
+
+export default TestDetailsScreen;
