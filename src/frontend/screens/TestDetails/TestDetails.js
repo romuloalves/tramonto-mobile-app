@@ -6,11 +6,11 @@ import ShareDialog from './ShareDialog';
 import Artifacts from './Artifacts';
 import Members from './Members';
 
-import { getBridgeContext } from '../../bridge-context';
+import { getBridgeContext } from '../../contexts/bridge-context';
 
 const BridgeContext = getBridgeContext();
 
-class TestDetailsScreen extends Component {
+export default class TestDetailsScreen extends Component {
   static navigationOptions = ({ navigation }) => ({
     title: navigation.state.params.name,
     headerRight: (
@@ -19,6 +19,8 @@ class TestDetailsScreen extends Component {
         onPress={ navigation.getParam('showShareDialog') } />
     )
   });
+
+  static contextType = BridgeContext;
 
   state = {
     dialogVisible: false,
@@ -110,7 +112,3 @@ class TestDetailsScreen extends Component {
     );
   }
 }
-
-TestDetailsScreen.contextType = BridgeContext;
-
-export default TestDetailsScreen;

@@ -9,7 +9,7 @@ import FabButton from '../components/FabButton';
 
 import * as Tests from '../storage/tests';
 
-import { getBridgeContext } from '../bridge-context';
+import { getBridgeContext } from '../contexts/bridge-context';
 
 const BridgeContext = getBridgeContext();
 

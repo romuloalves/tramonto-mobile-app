@@ -8,7 +8,7 @@ import { List } from 'react-native-paper';
 
 import FabButton from '../../components/FabButton';
 
-import { getBridgeContext, ACTIONS } from '../../bridge-context';
+import { getBridgeContext } from '../../contexts/bridge-context';
 
 const BridgeContext = getBridgeContext();
 
@@ -49,7 +49,7 @@ export default class TestList extends Component {
                   ))
                 }
               </ArtifactsList>
-              <FabButton icon="cloud-upload" onClick={ () => send(ACTIONS.ADD_FILE) }>
+              <FabButton icon="cloud-upload" onClick={ () => send() }>
               </FabButton>
             </Fragment>
           )

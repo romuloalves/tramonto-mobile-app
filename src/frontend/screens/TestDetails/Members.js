@@ -7,7 +7,7 @@ import ListItem from '../../components/ListItem'
 
 import FabButton from '../../components/FabButton';
 
-import { getBridgeContext, ACTIONS } from '../../bridge-context';
+import { getBridgeContext } from '../../contexts/bridge-context';
 
 const BridgeContext = getBridgeContext();
 
@@ -57,7 +57,7 @@ export default class TestList extends Component {
                   })
                 }
               </MembersList>
-              <FabButton icon="person-add" onClick={ () => send(ACTIONS.ADD_MEMBER) }>
+              <FabButton icon="person-add" onClick={ () => send() }>
               </FabButton>
             </Fragment>
           )

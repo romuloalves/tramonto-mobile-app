@@ -3,11 +3,13 @@ import { View, StyleSheet } from 'react-native';
 import { ActivityIndicator, Button, Headline } from 'react-native-paper';
 import RNExitApp from 'react-native-exit-app';
 
-import { getBridgeContext } from '../bridge-context';
+import { getBridgeContext } from '../contexts/bridge-context';
 
 const BridgeContext = getBridgeContext();
 
-class InitializeScreen extends Component {
+export default class InitializeScreen extends Component {
+  static contextType = BridgeContext;
+
   componentWillMount() {
     this.context.onInitializationReady(() => {
       this.props.navigation.navigate('Main');
@@ -35,8 +37,6 @@ class InitializeScreen extends Component {
   }
 }
 
-InitializeScreen.contextType = BridgeContext;
-
 const styles = StyleSheet.create({
   container: {
     display: 'flex',
@@ -49,5 +49,3 @@ const styles = StyleSheet.create({
     marginBottom: 100
   }
 });
-
-export default InitializeScreen;

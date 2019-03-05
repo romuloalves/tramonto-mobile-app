@@ -1,11 +1,12 @@
-import React, { Component } from 'react';
-import { View } from 'react-native';
+import React, { Component, createContext } from 'react';
+import { View, StyleSheet } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
 import { StackActions, NavigationActions } from 'react-navigation';
 
 import * as Tests from '../storage/tests';
 
-import { getBridgeContext } from '../bridge-context';
+import { getBridgeContext } from '../contexts/bridge-context';
+import { SnackbarContext } from '../contexts/snackbar-context';
 
 const BridgeContext = getBridgeContext();
 
@@ -28,8 +29,14 @@ class NewTestScreen extends Component {
   }
 
   componentDidMount() {
-    this.context.onCreateTestMessage(payload => {
+    const bridgeContext = this.props.bridgeContext;
+    const snackContext = this.props.snackbarContext;
+
+    bridgeContext.onCreateTestMessage(payload => {
       this.setState({ loading: false }, async () => {
+        snackContext.setSnackBarText('Teste publicado!');
+        snackContext.toggleSnackBar(true);
+
         const { name, description } = this.state;
         const newTest = {
           name,
@@ -55,18 +62,21 @@ class NewTestScreen extends Component {
   }
 
   componentWillUnmount() {
-    this.context.onCreateTestMessage();
+    const bridgeContext = this.props.bridgeContext;
+
+    bridgeContext.onCreateTestMessage();
   }
 
   createNewTest() {
+    const bridgeContext = this.props.bridgeContext;
+
     this.setState({
       loading: true,
       buttonText: 'Publicando'
     }, () => {
       const { name, description } = this.state;
-      const { createTest } = this.context;
 
-      createTest(name, description);
+      bridgeContext.createTest(name, description);
     });
   }
 
@@ -74,7 +84,7 @@ class NewTestScreen extends Component {
     const { buttonText, loading } = this.state;
 
     return (
-      <View style={{ paddingLeft: 20, paddingRight: 20, paddingTop: 10, paddingBottom: 20, display: 'flex', flex: 1, justifyContent: 'space-between' }}>
+      <View style={ styles.view }>
         <View>
           <TextInput
             label="Nome"
@@ -109,6 +119,34 @@ class NewTestScreen extends Component {
   }
 }
 
-NewTestScreen.contextType = BridgeContext;
+export default function(props) {
+  return (
+    <BridgeContext.Consumer>
+      {
+        bridgeContext => (
+          <SnackbarContext.Consumer>
+            {
+              snackBarContext => (
+                <NewTestScreen bridgeContext={ bridgeContext }
+                  snackbarContext={ snackBarContext }
+                  { ...props } />
+              )
+            }
+          </SnackbarContext.Consumer>
+        )
+      }
+    </BridgeContext.Consumer>
+  );
+}
 
-export default NewTestScreen;
+const styles = StyleSheet.create({
+  view: {
+    paddingLeft: 20,
+    paddingRight: 20,
+    paddingTop: 10,
+    paddingBottom: 20,
+    display: 'flex',
+    flex: 1,
+    justifyContent: 'space-between'
+  }
+});
