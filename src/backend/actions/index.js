@@ -21,7 +21,13 @@ module.exports = async function executeAction(params, ipfs, callback) {
     }
 
     if (action === 'read-test') {
-      const data = await readTest(payload, ipfs);
+      const withProgressPayload = {
+        ...payload,
+        onProgress(msg) {
+          return callback(null, msg);
+        }
+      };
+      const data = await readTest(withProgressPayload, ipfs);
 
       return callback(null, data);
     }

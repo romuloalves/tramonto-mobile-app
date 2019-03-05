@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { Appbar, BottomNavigation, Portal, Dialog } from 'react-native-paper';
+import { Appbar, BottomNavigation, Portal, Dialog, Headline, ActivityIndicator } from 'react-native-paper';
 
 import ShareDialog from './ShareDialog';
 
@@ -30,7 +30,8 @@ export default class TestDetailsScreen extends Component {
       { key: 'people', title: 'MEMBROS', icon: 'group' }
     ],
     artifacts: [],
-    people: []
+    people: [],
+    readingStatus: null
   };
 
   constructor(props) {
@@ -41,10 +42,17 @@ export default class TestDetailsScreen extends Component {
   }
 
   componentWillUnmount() {
+    this.context.onReadTestProgress();
     this.context.onReadTestMessage();
   }
 
   componentDidMount() {
+    this.context.onReadTestProgress(payload => {
+      return this.setState({
+        readingStatus: payload
+      });
+    });
+
     this.props.navigation.setParams({
       showShareDialog: this.showDialog
     });
@@ -87,7 +95,7 @@ export default class TestDetailsScreen extends Component {
   }
 
   render() {
-    const { dialogVisible } = this.state;
+    const { dialogVisible, readingStatus } = this.state;
     const { name, hash, secret } = this.props.navigation.state.params;
 
     return (
@@ -108,6 +116,18 @@ export default class TestDetailsScreen extends Component {
           navigationState={ this.state }
           onIndexChange={ this._handleIndexChange }
           renderScene={ this._renderScene } />
+          <Dialog visible={ readingStatus !== null }
+            dismissable={ false }>
+            <Dialog.Content>
+              <ActivityIndicator animating={ true }
+                color="rgb(30, 45, 62)"
+                size="large">
+              </ActivityIndicator>
+              <Headline style={{ textAlign: 'center', marginTop: 20 }}>
+                { readingStatus }
+              </Headline>
+            </Dialog.Content>
+          </Dialog>
       </Fragment>
     );
   }

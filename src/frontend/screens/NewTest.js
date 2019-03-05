@@ -129,7 +129,9 @@ class NewTestScreen extends Component {
               color="rgb(30, 45, 62)"
               size="large">
             </ActivityIndicator>
-            <Headline style={{ textAlign: 'center', marginTop: 20 }}>{ publishingStatus }...</Headline>
+            <Headline style={{ textAlign: 'center', marginTop: 20 }}>
+              { publishingStatus }
+            </Headline>
           </Dialog.Content>
         </Dialog>
       </View>

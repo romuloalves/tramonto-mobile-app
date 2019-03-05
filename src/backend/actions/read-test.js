@@ -1,8 +1,24 @@
 const { decrypt } = require('../utils/crypto');
 const { resolveIpns } = require('../utils/ipfs');
 
-module.exports = async function readTest({ hash, secret }, ipfs) {
+function sendProgress(payload, fn) {
+  if (!fn) {
+    return;
+  }
+
+  return fn({
+    action: 'read-test-progress',
+    payload
+  });
+}
+
+module.exports = async function readTest({ hash, secret, onProgress }, ipfs) {
+  sendProgress('Obtendo teste', onProgress);
+
   const ipfsAddr = await resolveIpns(hash, ipfs);
+
+  sendProgress('Lendo arquivos', onProgress);
+
   const files = await ipfs.get(ipfsAddr);
   const response = {
     metadata: {},
@@ -16,6 +32,8 @@ module.exports = async function readTest({ hash, secret }, ipfs) {
       payload: response
     };
   }
+
+  sendProgress('Descriptografando', onProgress);
 
   files.forEach(file => {
     if (!file.content) {

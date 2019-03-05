@@ -88,6 +88,16 @@ const contextFunctions = {
     }
 
     delete globalMessageCallbacks[eventName];
+  },
+  onReadTestProgress(callback) {
+    const eventName = 'read-test-progress';
+
+    if (callback) {
+      globalMessageCallbacks[eventName] = callback;
+      return;
+    }
+
+    delete globalMessageCallbacks[eventName];
   }
 };
 
