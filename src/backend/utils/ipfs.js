@@ -13,5 +13,9 @@ module.exports.generateIpnsKey = async function generateIpnsKey(name, ipfs) {
 module.exports.resolveIpns = async function resolveIpns(hash, ipfs) {
   const name = await ipfs.name.resolve(hash);
 
+  if (name && name.path) {
+    return name.path;
+  }
+
   return name;
 };

@@ -60,7 +60,8 @@ export default class TestDetailsScreen extends Component {
     this.context.onReadTestMessage(payload => {
       const newState = {
         artifacts: payload.artifacts,
-        people: payload.people
+        people: payload.people,
+        readingStatus: null
       };
 
       return this.setState(newState);
