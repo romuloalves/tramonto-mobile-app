@@ -1,3 +1,5 @@
+const { join } = require('path');
+const { mkdirSync, existsSync } = require('fs');
 const bridge = require('rn-bridge');
 const IPFS = require('ipfs');
 
@@ -15,7 +17,14 @@ bridge.channel.send({
   payload: true
 });
 
+const repoPath = join(bridge.app.datadir());
+
+if (!existsSync(repoPath)) {
+  mkdirSync(repoPath);
+}
+
 const ipfsConfig = {
+  repo: repoPath,
   pass: 'tramontooneisthebestever',
   init: {
     bits: 1024
@@ -31,12 +40,6 @@ const ipfsConfig = {
     },
     pubsub: false
   }
-  // ,
-  // connectionManager: {
-  //   maxPeers: 10,
-  //   minPeers: 2,
-  //   pollInterval: 20000 // ms
-  // }
 };
 
 try {
