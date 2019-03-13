@@ -30,22 +30,23 @@ const ipfsConfig = {
     bits: 1024
   },
   EXPERIMENTAL: {
-    dht: false, // TODO: BRICKS COMPUTER
-    relay: {
-      enabled: true,
-      hop: {
-        enabled: false, // TODO: CPU hungry on mobile
-        active: false
-      }
-    },
-    pubsub: false
+    dht: true,
+    ipnsPubsub: true
   }
 };
 
 try {
   const ipfs = new IPFS(ipfsConfig);
 
-  ipfs.on('ready', function onIpfsReady() {
+  ipfs.on('ready', async function onIpfsReady() {
+    // const bootstrapAddr = '/ip4/206.189.200.98/tcp/4001/ipfs/QmZFX4X8K1icea9eZA3de8UurdW65G5PXsgZkVsWZnsBaF';
+
+    // await ipfs.bootstrap.add(bootstrapAddr, {
+    //   default: true
+    // });
+
+    // await ipfs.swarm.connect(bootstrapAddr);
+
     bridge.channel.on('message', function(msg) {
       return executeAction(msg, ipfs, function executeActionCallback(err, responseMessage) {
         if (err) {
