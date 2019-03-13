@@ -50,7 +50,8 @@ class NewTestScreen extends Component {
           name,
           description,
           hash: payload.hash,
-          secret: payload.secret
+          secret: payload.secret,
+          ipfs: payload.ipfs
         };
 
         await Tests.addTest(newTest);

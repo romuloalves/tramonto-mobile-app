@@ -82,7 +82,8 @@ module.exports = async function createTest({ name, description, onProgress }, ip
       action: 'create-test-success',
       payload: {
         hash: ipns.id,
-        secret: password
+        secret: password,
+        ipfs: ipfsHashToAdd
       }
     };
 

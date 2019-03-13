@@ -97,7 +97,7 @@ export default class TestDetailsScreen extends Component {
 
   render() {
     const { dialogVisible, readingStatus } = this.state;
-    const { name, hash, secret } = this.props.navigation.state.params;
+    const { name, hash, secret, ipfs } = this.props.navigation.state.params;
 
     return (
       <Fragment>
@@ -107,7 +107,8 @@ export default class TestDetailsScreen extends Component {
             <ShareDialog onClose={ this.hideDialog }
               name={ name }
               hash={ hash || '' }
-              secret={ secret || '' } />
+              secret={ secret || '' }
+              ipfs={ ipfs || '' } />
           </Dialog>
         </Portal>
         <BottomNavigation
