@@ -1,7 +1,18 @@
 const createTest = require('./create-test');
 const readTest = require('./read-test');
+const importTest = require('./import-test');
 const sendState = require('./send-state');
 
+/**
+ * @function executeAction
+ * @description Executes selected actions accordingly to what is asked for
+ * @param  {Object} params         Params to execute the action
+ * @param  {String} params.action  Action to the executed
+ * @param  {Object} params.payload Data to use in the action
+ * @param  {Object} ipfs           IPFS node object
+ * @param  {Function} callback     Callback function to send messages back
+ * @return {Void} Just executes the callback, returns nothing
+ */
 module.exports = async function executeAction(params, ipfs, callback) {
   const { action, payload } = params;
 
@@ -36,6 +47,23 @@ module.exports = async function executeAction(params, ipfs, callback) {
 
       // Reads the test
       const data = await readTest(withProgressPayload, ipfs);
+
+      return callback(null, data);
+    }
+
+    // Action to import the test
+    if (action === 'import-test') {
+      const withProgressPayload = {
+        ...payload,
+
+        // Function to send the progress to the react-native
+        onProgress(msg) {
+          return callback(null, msg);
+        }
+      };
+
+      // Imports the test
+      const data = await importTest(withProgressPayload, ipfs);
 
       return callback(null, data);
     }

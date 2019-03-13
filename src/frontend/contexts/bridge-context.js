@@ -98,6 +98,34 @@ const contextFunctions = {
     }
 
     delete globalMessageCallbacks[eventName];
+  },
+
+  // Tests - Import
+  importTest(hash, secret) {
+    return sendMessage('import-test', {
+      hash,
+      secret
+    });
+  },
+  onImportTestMessage(callback) {
+    const eventName = 'import-test-success';
+
+    if (callback) {
+      globalMessageCallbacks[eventName] = callback;
+      return;
+    }
+
+    delete globalMessageCallbacks[eventName];
+  },
+  onImportTestProgress(callback) {
+    const eventName = 'import-test-progress';
+
+    if (callback) {
+      globalMessageCallbacks[eventName] = callback;
+      return;
+    }
+
+    delete globalMessageCallbacks[eventName];
   }
 };
 
