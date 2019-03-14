@@ -28,6 +28,7 @@ export default class TestListScreen extends Component {
 
     this.onListItemClick = this.onListItemClick.bind(this);
     this.onNewTestClick = this.onNewTestClick.bind(this);
+    this.onImportTestClick = this.onImportTestClick.bind(this);
   }
 
   async componentWillMount() {
@@ -44,6 +45,12 @@ export default class TestListScreen extends Component {
 
   onNewTestClick() {
     this.props.navigation.navigate('NewTest');
+
+    return;
+  }
+
+  onImportTestClick() {
+    this.props.navigation.navigate('ImportTest');
 
     return;
   }
@@ -79,7 +86,7 @@ export default class TestListScreen extends Component {
                   {
                     icon: 'cloud-download',
                     label: 'Importar teste',
-                    onPress: () => alert('Import test')
+                    onPress: () => this.onImportTestClick()
                   }
                 ]}
                 onStateChange={ ({ open }) => this.setState({ isFabOpen: open }) } />

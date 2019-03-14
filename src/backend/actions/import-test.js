@@ -35,7 +35,7 @@ function sendProgress(payload, fn) {
 module.exports = async function importTest({ hash, secret, onProgress }, ipfs) {
   sendProgress('Obtendo teste', onProgress);
 
-  const ipfsAddr = await resolveIpns(secret, ipfs);
+  const ipfsAddr = await resolveIpns(hash, ipfs);
 
   sendProgress('Lendo arquivos', onProgress);
 
@@ -61,7 +61,7 @@ module.exports = async function importTest({ hash, secret, onProgress }, ipfs) {
   };
 
   // Loops the files
-  files.forEach(file => {
+  files.forEach(async file => {
     // If the file doesn't have content, it doesn't matter
     if (!file.content) {
       // Pins the files

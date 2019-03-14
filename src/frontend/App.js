@@ -11,6 +11,7 @@ import { SnackbarContext } from './contexts/snackbar-context';
 import TestListScreen from './screens/TestList';
 import TestDetails from './screens/TestDetails/TestDetails';
 import NewTestScreen from './screens/NewTest';
+import ImportTestScreen from './screens/ImportTest';
 
 // Modals
 import Initialize from './screens/Initialize';
@@ -18,7 +19,8 @@ import Initialize from './screens/Initialize';
 const MainNavigator = createStackNavigator({
   Home: { screen: TestListScreen },
   Details: { screen: TestDetails },
-  NewTest: { screen: NewTestScreen }
+  NewTest: { screen: NewTestScreen },
+  ImportTest: { screen: ImportTestScreen }
 }, {
   initialRouteName: 'Home',
   defaultNavigationOptions: {

@@ -10,7 +10,7 @@ import { SnackbarContext } from '../contexts/snackbar-context';
 
 const BridgeContext = getBridgeContext();
 
-class NewTestScreen extends Component {
+class ImportTestScreen extends Component {
   static navigationOptions = {
     title: 'Importar teste'
   };
@@ -25,6 +25,8 @@ class NewTestScreen extends Component {
 
   constructor(props) {
     super(props);
+
+    this.importTest = this.importTest.bind(this);
   }
 
   componentDidMount() {
@@ -40,13 +42,12 @@ class NewTestScreen extends Component {
       this.setState({ loading: false, importingStatus: null }, async () => {
         const snackContext = this.props.snackbarContext;
 
-        snackContext.setSnackBarText('Teste publicado!');
+        snackContext.setSnackBarText('Teste importado!');
         snackContext.toggleSnackBar(true);
 
-        const { name, description } = this.state;
         const newTest = {
-          name,
-          description,
+          name: payload.name,
+          description: payload.description,
           hash: payload.hash,
           secret: payload.secret,
           ipfs: payload.ipfs
@@ -62,8 +63,6 @@ class NewTestScreen extends Component {
         });
 
         this.props.navigation.dispatch(resetActions);
-
-        this.props.navigation.navigate('Details', newTest);
       });
     });
   }
@@ -71,19 +70,19 @@ class NewTestScreen extends Component {
   componentWillUnmount() {
     const bridgeContext = this.props.bridgeContext;
 
-    bridgeContext.onCreateTestProgress();
-    bridgeContext.onCreateTestMessage();
+    bridgeContext.onImportTestProgress();
+    bridgeContext.onImportTestMessage();
   }
 
-  createNewTest() {
+  importTest() {
     this.setState({
       loading: true,
-      buttonText: 'Publicando'
+      buttonText: 'Importando'
     }, () => {
-      const { name, description } = this.state;
+      const { hash, secret } = this.state;
       const bridgeContext = this.props.bridgeContext;
 
-      bridgeContext.createTest(name, description);
+      bridgeContext.importTest(hash, secret);
     });
   }
 
@@ -94,20 +93,17 @@ class NewTestScreen extends Component {
       <View style={ styles.view }>
         <View>
           <TextInput
-            label="Nome"
-            value={ this.state.name }
-            onChangeText={ name => this.setState({ name }) }
+            label="Hash"
+            value={ this.state.hash }
+            onChangeText={ hash => this.setState({ hash }) }
             mode="outlined"
             style={{ backgroundColor: '#fff' }}
-            maxLength={ 6 }
-            autoCapitalize="characters"
             returnKeyType="next"
             disabled={ loading } />
           <TextInput
-            label="Descrição"
-            value={ this.state.description }
-            onChangeText={ description => this.setState({ description }) }
-            multiline={ true }
+            label="Chave"
+            value={ this.state.secret }
+            onChangeText={ secret => this.setState({ secret }) }
             mode="outlined"
             style={{ marginTop: 20, backgroundColor: '#fff' }}
             disabled={ loading } />
@@ -116,7 +112,7 @@ class NewTestScreen extends Component {
           <Button mode="contained"
             loading={ loading }
             style={{ backgroundColor: 'rgb(220, 64, 69)', height: 45, justifyContent: 'center' }}
-            onPress={ () => this.createNewTest() }
+            onPress={ () => this.importTest() }
             disabled={ loading }>
             { buttonText }
           </Button>
@@ -146,7 +142,7 @@ export default function(props) {
           <SnackbarContext.Consumer>
             {
               snackBarContext => (
-                <NewTestScreen bridgeContext={ bridgeContext }
+                <ImportTestScreen bridgeContext={ bridgeContext }
                   snackbarContext={ snackBarContext }
                   { ...props } />
               )
