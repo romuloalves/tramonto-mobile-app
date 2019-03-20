@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
+import { NativeModules } from 'react-native';
 import { createStackNavigator, createAppContainer } from 'react-navigation';
 import { DefaultTheme, Provider as PaperProvider, Snackbar } from 'react-native-paper';
+import RNFS from 'react-native-fs';
+
+const { TramontoOne } = NativeModules;
 
 import { SnackbarContext } from './contexts/snackbar-context';
 
@@ -80,6 +84,13 @@ export default class extends Component {
   }
 
   componentWillMount() {
+    TramontoOne.startRepo(RNFS.DocumentDirectoryPath, function startRepoCallback(err) {
+      if (err) {
+        return alert('Error starting repo: ' + err);
+      }
+
+      return alert('Repo started!!!! :X');
+    });
   }
 
   render() {
