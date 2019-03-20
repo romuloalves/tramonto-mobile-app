@@ -1,14 +1,8 @@
 import React, { Component } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { TextInput, Button, Dialog, ActivityIndicator, Headline } from 'react-native-paper';
-import { StackActions, NavigationActions } from 'react-navigation';
 
-import * as Tests from '../storage/tests';
-
-import { getBridgeContext } from '../contexts/bridge-context';
 import { SnackbarContext } from '../contexts/snackbar-context';
-
-const BridgeContext = getBridgeContext();
 
 class NewTestScreen extends Component {
   static navigationOptions = {
@@ -29,63 +23,15 @@ class NewTestScreen extends Component {
     this.createNewTest = this.createNewTest.bind(this);
   }
 
-  componentDidMount() {
-    const bridgeContext = this.props.bridgeContext;
-
-    bridgeContext.onCreateTestProgress(payload => {
-      return this.setState({
-        publishingStatus: payload
-      });
-    });
-
-    bridgeContext.onCreateTestMessage(payload => {
-      this.setState({ loading: false, publishingStatus: null }, async () => {
-        const snackContext = this.props.snackbarContext;
-
-        snackContext.setSnackBarText('Teste publicado!');
-        snackContext.toggleSnackBar(true);
-
-        const { name, description } = this.state;
-        const newTest = {
-          name,
-          description,
-          hash: payload.hash,
-          secret: payload.secret,
-          ipfs: payload.ipfs
-        };
-
-        await Tests.addTest(newTest);
-
-        const resetActions = StackActions.reset({
-          index: 0,
-          actions: [
-            NavigationActions.navigate({ routeName: 'Home' })
-          ]
-        });
-
-        this.props.navigation.dispatch(resetActions);
-
-        this.props.navigation.navigate('Details', newTest);
-      });
-    });
-  }
-
-  componentWillUnmount() {
-    const bridgeContext = this.props.bridgeContext;
-
-    bridgeContext.onCreateTestProgress();
-    bridgeContext.onCreateTestMessage();
-  }
-
   createNewTest() {
     this.setState({
       loading: true,
       buttonText: 'Publicando'
     }, () => {
       const { name, description } = this.state;
-      const bridgeContext = this.props.bridgeContext;
+      // const bridgeContext = this.props.bridgeContext;
 
-      bridgeContext.createTest(name, description);
+      // bridgeContext.createTest(name, description);
     });
   }
 
@@ -142,21 +88,15 @@ class NewTestScreen extends Component {
 
 export default function(props) {
   return (
-    <BridgeContext.Consumer>
+    <SnackbarContext.Consumer>
       {
-        bridgeContext => (
-          <SnackbarContext.Consumer>
-            {
-              snackBarContext => (
-                <NewTestScreen bridgeContext={ bridgeContext }
-                  snackbarContext={ snackBarContext }
-                  { ...props } />
-              )
-            }
-          </SnackbarContext.Consumer>
+        snackBarContext => (
+          <NewTestScreen bridgeContext={ bridgeContext }
+            snackbarContext={ snackBarContext }
+            { ...props } />
         )
       }
-    </BridgeContext.Consumer>
+    </SnackbarContext.Consumer>
   );
 }
 

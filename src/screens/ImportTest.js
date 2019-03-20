@@ -1,14 +1,8 @@
 import React, { Component } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { TextInput, Button, Dialog, ActivityIndicator, Headline } from 'react-native-paper';
-import { StackActions, NavigationActions } from 'react-navigation';
 
-import * as Tests from '../storage/tests';
-
-import { getBridgeContext } from '../contexts/bridge-context';
 import { SnackbarContext } from '../contexts/snackbar-context';
-
-const BridgeContext = getBridgeContext();
 
 class ImportTestScreen extends Component {
   static navigationOptions = {
@@ -30,48 +24,41 @@ class ImportTestScreen extends Component {
   }
 
   componentDidMount() {
-    const bridgeContext = this.props.bridgeContext;
+    // const bridgeContext = this.props.bridgeContext;
 
-    bridgeContext.onImportTestProgress(payload => {
-      return this.setState({
-        importingStatus: payload
-      });
-    });
+    // bridgeContext.onImportTestProgress(payload => {
+    //   return this.setState({
+    //     importingStatus: payload
+    //   });
+    // });
 
-    bridgeContext.onImportTestMessage(payload => {
-      this.setState({ loading: false, importingStatus: null }, async () => {
-        const snackContext = this.props.snackbarContext;
+    // bridgeContext.onImportTestMessage(payload => {
+    //   this.setState({ loading: false, importingStatus: null }, async () => {
+    //     const snackContext = this.props.snackbarContext;
 
-        snackContext.setSnackBarText('Teste importado!');
-        snackContext.toggleSnackBar(true);
+    //     snackContext.setSnackBarText('Teste importado!');
+    //     snackContext.toggleSnackBar(true);
 
-        const newTest = {
-          name: payload.name,
-          description: payload.description,
-          hash: payload.hash,
-          secret: payload.secret,
-          ipfs: payload.ipfs
-        };
+    //     const newTest = {
+    //       name: payload.name,
+    //       description: payload.description,
+    //       hash: payload.hash,
+    //       secret: payload.secret,
+    //       ipfs: payload.ipfs
+    //     };
 
-        await Tests.addTest(newTest);
+    //     await Tests.addTest(newTest);
 
-        const resetActions = StackActions.reset({
-          index: 0,
-          actions: [
-            NavigationActions.navigate({ routeName: 'Home' })
-          ]
-        });
+    //     const resetActions = StackActions.reset({
+    //       index: 0,
+    //       actions: [
+    //         NavigationActions.navigate({ routeName: 'Home' })
+    //       ]
+    //     });
 
-        this.props.navigation.dispatch(resetActions);
-      });
-    });
-  }
-
-  componentWillUnmount() {
-    const bridgeContext = this.props.bridgeContext;
-
-    bridgeContext.onImportTestProgress();
-    bridgeContext.onImportTestMessage();
+    //     this.props.navigation.dispatch(resetActions);
+    //   });
+    // });
   }
 
   importTest() {
@@ -80,9 +67,9 @@ class ImportTestScreen extends Component {
       buttonText: 'Importando'
     }, () => {
       const { hash, secret } = this.state;
-      const bridgeContext = this.props.bridgeContext;
+      // const bridgeContext = this.props.bridgeContext;
 
-      bridgeContext.importTest(hash, secret);
+      // bridgeContext.importTest(hash, secret);
     });
   }
 
@@ -136,21 +123,15 @@ class ImportTestScreen extends Component {
 
 export default function(props) {
   return (
-    <BridgeContext.Consumer>
+    <SnackbarContext.Consumer>
       {
-        bridgeContext => (
-          <SnackbarContext.Consumer>
-            {
-              snackBarContext => (
-                <ImportTestScreen bridgeContext={ bridgeContext }
-                  snackbarContext={ snackBarContext }
-                  { ...props } />
-              )
-            }
-          </SnackbarContext.Consumer>
+        snackBarContext => (
+          <ImportTestScreen bridgeContext={ bridgeContext }
+            snackbarContext={ snackBarContext }
+            { ...props } />
         )
       }
-    </BridgeContext.Consumer>
+    </SnackbarContext.Consumer>
   );
 }
 

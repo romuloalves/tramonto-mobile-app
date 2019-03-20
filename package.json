@@ -3,13 +3,10 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "postinstall": "patch-package",
     "start": "node node_modules/react-native/local-cli/cli.js start",
-    "test": "jest",
-    "build:backend": "./tools/build-backend && ./tools/minify-backend"
+    "test": "jest"
   },
   "dependencies": {
-    "nodejs-mobile-react-native": "^0.3.3",
     "react": "^16.8.3",
     "react-native": "^0.58.6",
     "react-native-exit-app": "^1.0.0",
@@ -24,7 +21,6 @@
     "babel-jest": "24.1.0",
     "jest": "24.1.0",
     "metro-react-native-babel-preset": "0.52.0",
-    "patch-package": "^6.0.5",
     "react-test-renderer": "16.6.3"
   },
   "jest": {

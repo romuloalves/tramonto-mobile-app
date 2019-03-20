@@ -2,9 +2,6 @@ import React, { Component } from 'react';
 import { createStackNavigator, createAppContainer } from 'react-navigation';
 import { DefaultTheme, Provider as PaperProvider, Snackbar } from 'react-native-paper';
 
-import nodejs from 'nodejs-mobile-react-native';
-
-import { getBridgeContext } from './contexts/bridge-context';
 import { SnackbarContext } from './contexts/snackbar-context';
 
 // Screens
@@ -37,13 +34,11 @@ const RootStack = createStackNavigator({
   Main: { screen: MainNavigator },
   InitializeModal: { screen: Initialize }
 }, {
-  initialRouteName: 'InitializeModal',
+  initialRouteName: 'Main',
   mode: 'modal',
   headerMode: 'none'
 });
 const App = createAppContainer(RootStack);
-
-const BridgeContext = getBridgeContext(nodejs);
 
 const theme = {
   ...DefaultTheme,
@@ -85,25 +80,22 @@ export default class extends Component {
   }
 
   componentWillMount() {
-    nodejs.start('main.js');
   }
 
   render() {
     return (
       <PaperProvider theme={ theme }>
-        <BridgeContext.Provider>
-          <SnackbarContext.Provider value={ this.state }>
-            <App />
-            <Snackbar visible={ this.state.snackBarVisible }
-              onDismiss={ () => this.state.toggleSnackBar(false) }
-              action={{
-                label: 'Fechar',
-                onPress: () => this.state.toggleSnackBar(false)
-              }}>
-              { this.state.snackBarText }
-            </Snackbar>
-          </SnackbarContext.Provider>
-        </BridgeContext.Provider>
+        <SnackbarContext.Provider value={ this.state }>
+          <App />
+          <Snackbar visible={ this.state.snackBarVisible }
+            onDismiss={ () => this.state.toggleSnackBar(false) }
+            action={{
+              label: 'Fechar',
+              onPress: () => this.state.toggleSnackBar(false)
+            }}>
+            { this.state.snackBarText }
+          </Snackbar>
+        </SnackbarContext.Provider>
       </PaperProvider>
     );
   }

@@ -6,10 +6,6 @@ import ShareDialog from './ShareDialog';
 import Artifacts from './Artifacts';
 import Members from './Members';
 
-import { getBridgeContext } from '../../contexts/bridge-context';
-
-const BridgeContext = getBridgeContext();
-
 export default class TestDetailsScreen extends Component {
   static navigationOptions = ({ navigation }) => ({
     title: navigation.state.params.name,
@@ -19,8 +15,6 @@ export default class TestDetailsScreen extends Component {
         onPress={ navigation.getParam('showShareDialog') } />
     )
   });
-
-  static contextType = BridgeContext;
 
   state = {
     dialogVisible: false,
@@ -41,35 +35,10 @@ export default class TestDetailsScreen extends Component {
     this.hideDialog = this.hideDialog.bind(this);
   }
 
-  componentWillUnmount() {
-    this.context.onReadTestProgress();
-    this.context.onReadTestMessage();
-  }
-
   componentDidMount() {
-    this.context.onReadTestProgress(payload => {
-      return this.setState({
-        readingStatus: payload
-      });
-    });
-
-    this.props.navigation.setParams({
-      showShareDialog: this.showDialog
-    });
-
-    this.context.onReadTestMessage(payload => {
-      const newState = {
-        artifacts: payload.artifacts,
-        people: payload.people,
-        readingStatus: null
-      };
-
-      return this.setState(newState);
-    });
-
     const { hash, secret } = this.props.navigation.state.params;
 
-    this.context.readTest(hash, secret);
+    // this.context.readTest(hash, secret);
   }
 
   _handleIndexChange = index => this.setState({ index });
