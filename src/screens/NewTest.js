@@ -91,8 +91,7 @@ export default function(props) {
     <SnackbarContext.Consumer>
       {
         snackBarContext => (
-          <NewTestScreen bridgeContext={ bridgeContext }
-            snackbarContext={ snackBarContext }
+          <NewTestScreen snackbarContext={ snackBarContext }
             { ...props } />
         )
       }

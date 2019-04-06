@@ -3,9 +3,10 @@ package com.tramontoone;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
-import com.rnfs.RNFSPackage;
+import com.tramontoone.RNTramontoOneSdkPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
+import com.rnfs.RNFSPackage;
 import com.github.wumke.RNExitApp.RNExitAppPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -27,10 +28,10 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-            new RNFSPackage(),
-            new TramontoOnePackage(),
+            new RNTramontoOneSdkPackage(),
             new VectorIconsPackage(),
             new RNGestureHandlerPackage(),
+            new RNFSPackage(),
             new RNExitAppPackage()
       );
     }

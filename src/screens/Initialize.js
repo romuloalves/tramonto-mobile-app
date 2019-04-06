@@ -3,18 +3,24 @@ import { View, StyleSheet } from 'react-native';
 import { ActivityIndicator, Button, Headline } from 'react-native-paper';
 import RNExitApp from 'react-native-exit-app';
 
-export default class InitializeScreen extends Component {
-  //static contextType = BridgeContext;
+import { OneContext } from '../contexts/one-context';
 
+class InitializeScreen extends Component {
   state = {
     signalTimer: null
   };
 
+  constructor(props) {
+    super(props);
+  }
+
   componentWillMount() {
+    // alert(this.props.oneInstance);
+    // await this.props.oneInstance.initialize();
+    //  this.props.navigation.navigate('Main');
     //this.context.onInitializationReady(() => {
     //clearInterval(this.state.signalTimer);
     //this.setState({ signalTimer: null }, () => {
-    //  this.props.navigation.navigate('Main');
     //});
     //});
 
@@ -23,7 +29,14 @@ export default class InitializeScreen extends Component {
     //});
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    try {
+      await this.props.oneInstance.initialize();
+
+      this.props.navigation.navigate('Main');
+    } catch (err) {
+      alert(err.message);
+    }
     //this.state.signalTimer = setInterval(() => {
     //this.context.askForState();
     //}, 1000);
@@ -58,3 +71,9 @@ const styles = StyleSheet.create({
     marginBottom: 100
   }
 });
+
+export default props => (
+  <OneContext.Consumer>
+    { context => <InitializeScreen { ...props } oneInstance={ context }></InitializeScreen> }
+  </OneContext.Consumer>
+);

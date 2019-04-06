@@ -1,11 +1,10 @@
 import React, { Component, Fragment } from 'react';
+import One from 'tramonto-one-sdk';
 
 import TestsList from '../components/List';
 import ListItem from '../components/ListItem';
 
 import { List, FAB } from 'react-native-paper';
-
-import * as Tests from '../storage/tests';
 
 export default class TestListScreen extends Component {
   static navigationOptions = {

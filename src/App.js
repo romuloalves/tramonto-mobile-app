@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
-import { NativeModules } from 'react-native';
 import { createStackNavigator, createAppContainer } from 'react-navigation';
 import { DefaultTheme, Provider as PaperProvider, Snackbar } from 'react-native-paper';
-import RNFS from 'react-native-fs';
 
-const { TramontoOne } = NativeModules;
-
+import { OneContext, contextFunctions } from './contexts/one-context';
 import { SnackbarContext } from './contexts/snackbar-context';
 
 // Screens
@@ -38,7 +35,7 @@ const RootStack = createStackNavigator({
   Main: { screen: MainNavigator },
   InitializeModal: { screen: Initialize }
 }, {
-  initialRouteName: 'Main',
+  initialRouteName: 'InitializeModal',
   mode: 'modal',
   headerMode: 'none'
 });
@@ -83,30 +80,37 @@ export default class extends Component {
     };
   }
 
-  componentWillMount() {
-    TramontoOne.startRepo(RNFS.DocumentDirectoryPath, function startRepoCallback(err) {
-      if (err) {
-        return alert('Error starting repo: ' + err);
-      }
+  async componentDidMount() {
+    // alert('Starting setup');
 
-      return alert('Repo started!!!! :X');
-    });
+    // try {
+    // // const instance = new One();
+
+    // // await instance.setup();
+    //   // await this.context.initialize();
+
+    //   return alert('Repo started!!!! :X');
+    // } catch (err) {
+    //   alert('Error starting repo: ' + err);
+    // }
   }
 
   render() {
     return (
       <PaperProvider theme={ theme }>
-        <SnackbarContext.Provider value={ this.state }>
-          <App />
-          <Snackbar visible={ this.state.snackBarVisible }
-            onDismiss={ () => this.state.toggleSnackBar(false) }
-            action={{
-              label: 'Fechar',
-              onPress: () => this.state.toggleSnackBar(false)
-            }}>
-            { this.state.snackBarText }
-          </Snackbar>
-        </SnackbarContext.Provider>
+        <OneContext.Provider value={ contextFunctions }>
+          <SnackbarContext.Provider value={ this.state }>
+            <App />
+            <Snackbar visible={ this.state.snackBarVisible }
+              onDismiss={ () => this.state.toggleSnackBar(false) }
+              action={{
+                label: 'Fechar',
+                onPress: () => this.state.toggleSnackBar(false)
+              }}>
+              { this.state.snackBarText }
+            </Snackbar>
+          </SnackbarContext.Provider>
+        </OneContext.Provider>
       </PaperProvider>
     );
   }
