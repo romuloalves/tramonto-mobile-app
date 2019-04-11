@@ -3,12 +3,9 @@ import { View, StyleSheet } from 'react-native';
 import { TextInput, Button, Dialog, ActivityIndicator, Headline } from 'react-native-paper';
 
 import { SnackbarContext } from '../contexts/snackbar-context';
+import { OneContext } from '../contexts/one-context';
 
 class NewTestScreen extends Component {
-  static navigationOptions = {
-    title: 'Novo teste'
-  };
-
   state = {
     name: '',
     description: '',
@@ -27,11 +24,12 @@ class NewTestScreen extends Component {
     this.setState({
       loading: true,
       buttonText: 'Publicando'
-    }, () => {
+    }, async () => {
       const { name, description } = this.state;
-      // const bridgeContext = this.props.bridgeContext;
 
-      // bridgeContext.createTest(name, description);
+      await this.props.oneInstance.createTest(name, description);
+
+      alert('done!!');
     });
   }
 
@@ -86,19 +84,6 @@ class NewTestScreen extends Component {
   }
 }
 
-export default function(props) {
-  return (
-    <SnackbarContext.Consumer>
-      {
-        snackBarContext => (
-          <NewTestScreen snackbarContext={ snackBarContext }
-            { ...props } />
-        )
-      }
-    </SnackbarContext.Consumer>
-  );
-}
-
 const styles = StyleSheet.create({
   view: {
     paddingLeft: 20,
@@ -110,3 +95,23 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between'
   }
 });
+
+export default function NewTestScreenContainer(props) {
+  return (
+    <SnackbarContext.Consumer>
+      {
+        snackBarContext => (
+          <OneContext.Consumer>
+            {
+              oneContext => <NewTestScreen snackbarContext={ snackBarContext } oneInstance={ oneContext } { ...props } />
+            }
+          </OneContext.Consumer>
+        )
+      }
+    </SnackbarContext.Consumer>
+  );
+}
+
+NewTestScreenContainer.navigationOptions = {
+  title: 'Novo teste'
+};

@@ -1,16 +1,13 @@
 import React, { Component, Fragment } from 'react';
-import One from 'tramonto-one-sdk';
 
 import TestsList from '../components/List';
 import ListItem from '../components/ListItem';
 
 import { List, FAB } from 'react-native-paper';
 
-export default class TestListScreen extends Component {
-  static navigationOptions = {
-    title: 'Testes'
-  };
+import { OneContext } from '../contexts/one-context';
 
+class TestListScreen extends Component {
   state = {
     isFabOpen: false,
     tests: []
@@ -26,7 +23,7 @@ export default class TestListScreen extends Component {
 
   async componentWillMount() {
     return this.setState({
-      tests: await Tests.getTests()
+      tests: await this.props.oneInstance.getTests()
     });
   }
 
@@ -55,13 +52,16 @@ export default class TestListScreen extends Component {
       <Fragment>
         <TestsList>
           {
-            tests.map((item, key) => (
-              <ListItem key={ `${item.hash}+${key}` }
-                title={ item.name }
-                description={ item.description }
-                onClick={ () => this.onListItemClick(item) }
-                right={ props => <List.Icon {...props} icon="star-border" /> }></ListItem>
-            ))
+            tests.map((item, key) => {
+              alert(JSON.stringify(item));
+              return (
+                <ListItem key={ `${item.ipfs}+${key}` }
+                  title={ item.metadata.name }
+                  description={ item.metadata.description }
+                  onClick={ () => this.onListItemClick(item) }
+                  right={ props => <List.Icon {...props} icon="star-border" /> }></ListItem>
+              );
+            })
           }
         </TestsList>
         <FAB.Group
@@ -84,3 +84,17 @@ export default class TestListScreen extends Component {
     );
   }
 }
+
+export default function TestListScreenContainer(props) {
+  return (
+    <OneContext.Consumer>
+      {
+        context => <TestListScreen { ...props } oneInstance={ context } />
+      }
+    </OneContext.Consumer>
+  );
+}
+
+TestListScreenContainer.navigationOptions = {
+  title: 'Testes'
+};

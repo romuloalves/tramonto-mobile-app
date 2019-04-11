@@ -6,40 +6,14 @@ import RNExitApp from 'react-native-exit-app';
 import { OneContext } from '../contexts/one-context';
 
 class InitializeScreen extends Component {
-  state = {
-    signalTimer: null
-  };
-
-  constructor(props) {
-    super(props);
-  }
-
-  componentWillMount() {
-    // alert(this.props.oneInstance);
-    // await this.props.oneInstance.initialize();
-    //  this.props.navigation.navigate('Main');
-    //this.context.onInitializationReady(() => {
-    //clearInterval(this.state.signalTimer);
-    //this.setState({ signalTimer: null }, () => {
-    //});
-    //});
-
-    //this.context.onInitializationError(() => {
-    //alert('Error');
-    //});
-  }
-
-  async componentDidMount() {
+  componentDidMount() {
     try {
-      await this.props.oneInstance.initialize();
-
-      this.props.navigation.navigate('Main');
+      this.props.oneInstance.initialize(() => {
+        this.props.navigation.navigate('Main');
+      });
     } catch (err) {
       alert(err.message);
     }
-    //this.state.signalTimer = setInterval(() => {
-    //this.context.askForState();
-    //}, 1000);
   }
 
   render() {

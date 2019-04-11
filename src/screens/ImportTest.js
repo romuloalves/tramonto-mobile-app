@@ -5,10 +5,6 @@ import { TextInput, Button, Dialog, ActivityIndicator, Headline } from 'react-na
 import { SnackbarContext } from '../contexts/snackbar-context';
 
 class ImportTestScreen extends Component {
-  static navigationOptions = {
-    title: 'Importar teste'
-  };
-
   state = {
     hash: '',
     secret: '',
@@ -121,7 +117,19 @@ class ImportTestScreen extends Component {
   }
 }
 
-export default function(props) {
+const styles = StyleSheet.create({
+  view: {
+    paddingLeft: 20,
+    paddingRight: 20,
+    paddingTop: 10,
+    paddingBottom: 20,
+    display: 'flex',
+    flex: 1,
+    justifyContent: 'space-between'
+  }
+});
+
+export default function ImportTestScreenContainer(props) {
   return (
     <SnackbarContext.Consumer>
       {
@@ -134,14 +142,6 @@ export default function(props) {
   );
 }
 
-const styles = StyleSheet.create({
-  view: {
-    paddingLeft: 20,
-    paddingRight: 20,
-    paddingTop: 10,
-    paddingBottom: 20,
-    display: 'flex',
-    flex: 1,
-    justifyContent: 'space-between'
-  }
-});
+ImportTestScreenContainer.navigationOptions = {
+  title: 'Importar teste'
+};
