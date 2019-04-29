@@ -2,8 +2,13 @@ import React, { Fragment } from 'react';
 import { Clipboard, StyleSheet } from 'react-native';
 import { Button, Dialog, Title, Text } from 'react-native-paper';
 
-export default function ShareDialog({ name, hash, secret, ipfs, onClose }) {
+import { SnackbarContext } from '../../contexts/snackbar-context';
+
+function ShareDialog({ name, ipns, secret, ipfs, onClose, snackbarContext }) {
   function copyToClipboard(value) {
+    snackbarContext.setSnackBarText('Copiado!');
+    snackbarContext.toggleSnackBar(true);
+
     return Clipboard.setString(value);
   }
 
@@ -12,10 +17,10 @@ export default function ShareDialog({ name, hash, secret, ipfs, onClose }) {
       <Dialog.Title>{ name }</Dialog.Title>
       <Dialog.Content>
         <Title>Hash IPNS</Title>
-        <Text>{ hash }</Text>
+        <Text>{ ipns }</Text>
         <Button style={ styles.button }
           icon="content-copy"
-          onPress={ () => copyToClipboard(hash) }>Copiar</Button>
+          onPress={ () => copyToClipboard(ipns) }>Copiar</Button>
         <Title>Hash IPFS</Title>
         <Text>{ ipfs }</Text>
         <Button style={ styles.button }
@@ -31,6 +36,16 @@ export default function ShareDialog({ name, hash, secret, ipfs, onClose }) {
         <Button onPress={ () => onClose() }>Fechar</Button>
       </Dialog.Actions>
     </Fragment>
+  );
+}
+
+export default function ShareDialogContainer(props) {
+  return (
+    <SnackbarContext.Consumer>
+      {
+        context => <ShareDialog { ...props } snackbarContext={ context } />
+      }
+    </SnackbarContext.Consumer>
   );
 }
 

@@ -54,7 +54,15 @@ export default class extends Component {
   constructor(props) {
     super(props);
 
-    const toggleSnackBar = value => {
+    const toggleSnackBar = (value, time) => {
+      if (time) {
+        setTimeout(() => {
+          return this.setState({
+            snackBarVisible: false
+          });
+        }, time);
+      }
+
       return this.setState(({ snackBarVisible }) => {
         if (value === null || value === undefined) {
           value = !snackBarVisible;

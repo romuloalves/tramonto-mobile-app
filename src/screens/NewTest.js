@@ -1,6 +1,16 @@
 import React, { Component } from 'react';
 import { View, StyleSheet } from 'react-native';
-import { TextInput, Button, Dialog, ActivityIndicator, Headline } from 'react-native-paper';
+import {
+  TextInput,
+  Button,
+  Dialog,
+  ActivityIndicator,
+  Headline,
+  Switch,
+  Text,
+  HelperText
+} from 'react-native-paper';
+import { StackActions, NavigationActions } from 'react-navigation';
 
 import { SnackbarContext } from '../contexts/snackbar-context';
 import { OneContext } from '../contexts/one-context';
@@ -9,6 +19,7 @@ class NewTestScreen extends Component {
   state = {
     name: '',
     description: '',
+    publishTest: false,
     loading: false,
     buttonText: 'Publicar',
     publishingStatus: null
@@ -25,11 +36,22 @@ class NewTestScreen extends Component {
       loading: true,
       buttonText: 'Publicando'
     }, async () => {
+      const { snackbarContext, oneInstance, navigation } = this.props;
       const { name, description } = this.state;
+      const createdTest = await oneInstance.createTest(name, description);
 
-      await this.props.oneInstance.createTest(name, description);
+      snackbarContext.setSnackBarText('Teste publicado!');
+      snackbarContext.toggleSnackBar(true);
 
-      alert('done!!');
+      const resetActions = StackActions.reset({
+        index: 0,
+        actions: [
+          NavigationActions.navigate({ routeName: 'Main' })
+        ]
+      });
+
+      navigation.dispatch(resetActions);
+      navigation.navigate('Details', createdTest);
     });
   }
 
@@ -57,6 +79,15 @@ class NewTestScreen extends Component {
             mode="outlined"
             style={{ marginTop: 20, backgroundColor: '#fff' }}
             disabled={ loading } />
+          <View>
+            <Text>Publicar teste?</Text>
+            <Switch
+              value={ this.state.publishTest }
+              onValueChange={ () => this.setState(prevstate => ({ publishTest: !prevstate.publishTest })) } />
+            <HelperText type="info">
+              Isto pode demorar alguns minutos.
+            </HelperText>
+          </View>
         </View>
         <View>
           <Button mode="contained"

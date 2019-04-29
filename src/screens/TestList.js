@@ -22,6 +22,14 @@ class TestListScreen extends Component {
   }
 
   async componentWillMount() {
+    const { navigation } = this.props;
+
+    navigation.addListener('willFocus', () => this.loadTests());
+
+    await this.loadTests();
+  }
+
+  async loadTests() {
     return this.setState({
       tests: await this.props.oneInstance.getTests()
     });
@@ -53,7 +61,6 @@ class TestListScreen extends Component {
         <TestsList>
           {
             tests.map((item, key) => {
-              alert(JSON.stringify(item));
               return (
                 <ListItem key={ `${item.ipfs}+${key}` }
                   title={ item.metadata.name }

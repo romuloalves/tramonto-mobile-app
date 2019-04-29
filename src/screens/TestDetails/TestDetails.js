@@ -1,21 +1,14 @@
 import React, { Component, Fragment } from 'react';
 import { Appbar, BottomNavigation, Portal, Dialog, Headline, ActivityIndicator } from 'react-native-paper';
 
+import { OneContext } from '../../contexts/one-context';
+
 import ShareDialog from './ShareDialog';
 
 import Artifacts from './Artifacts';
 import Members from './Members';
 
-export default class TestDetailsScreen extends Component {
-  static navigationOptions = ({ navigation }) => ({
-    title: navigation.state.params.name,
-    headerRight: (
-      <Appbar.Action icon="share"
-        color="#fff"
-        onPress={ navigation.getParam('showShareDialog') } />
-    )
-  });
-
+class TestDetailsScreen extends Component {
   state = {
     dialogVisible: false,
     index: 0,
@@ -35,10 +28,29 @@ export default class TestDetailsScreen extends Component {
     this.hideDialog = this.hideDialog.bind(this);
   }
 
-  componentDidMount() {
-    const { hash, secret } = this.props.navigation.state.params;
+  async componentDidMount() {
+    const { navigation, oneInstance } = this.props;
+    const { ipfs, ipns, secret, ipnsKeyCreated } = navigation.state.params;
+    let test = null;
 
-    // this.context.readTest(hash, secret);
+    if (ipnsKeyCreated) {
+      test = await oneInstance.getTestbyIPNS(ipns, secret);
+    } else {
+      test = await oneInstance.getTestbyIPFS(ipfs, secret);
+    }
+
+    if (!test) {
+      return alert('error');
+    }
+
+    this.props.navigation.setParams({
+      showShareDialog: this.showDialog
+    });
+
+    return this.setState({
+      artifacts: test.metadata.artifacts,
+      people: test.metadata.members
+    });
   }
 
   _handleIndexChange = index => this.setState({ index });
@@ -66,7 +78,7 @@ export default class TestDetailsScreen extends Component {
 
   render() {
     const { dialogVisible, readingStatus } = this.state;
-    const { name, hash, secret, ipfs } = this.props.navigation.state.params;
+    const { metadata, ipns, secret, ipfs } = this.props.navigation.state.params;
 
     return (
       <Fragment>
@@ -74,8 +86,8 @@ export default class TestDetailsScreen extends Component {
           <Dialog visible={ dialogVisible }
             onDismiss={ this.hideDialog }>
             <ShareDialog onClose={ this.hideDialog }
-              name={ name }
-              hash={ hash || '' }
+              name={ metadata.name }
+              ipns={ ipns || '' }
               secret={ secret || '' }
               ipfs={ ipfs || '' } />
           </Dialog>
@@ -103,3 +115,22 @@ export default class TestDetailsScreen extends Component {
     );
   }
 }
+
+export default function TestDetailsScreenContainer(props) {
+  return (
+    <OneContext.Consumer>
+    {
+      context => <TestDetailsScreen { ...props } oneInstance={ context } />
+    }
+    </OneContext.Consumer>
+  );
+}
+
+TestDetailsScreenContainer.navigationOptions = ({ navigation }) => ({
+  title: navigation.state.params.metadata.name,
+  headerRight: (
+    <Appbar.Action icon="share"
+      color="#fff"
+      onPress={ navigation.getParam('showShareDialog') } />
+  )
+});
