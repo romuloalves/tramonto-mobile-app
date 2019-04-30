@@ -21,7 +21,7 @@ class TestListScreen extends Component {
     this.onImportTestClick = this.onImportTestClick.bind(this);
   }
 
-  async componentWillMount() {
+  async componentDidMount() {
     const { navigation } = this.props;
 
     navigation.addListener('willFocus', () => this.loadTests());
