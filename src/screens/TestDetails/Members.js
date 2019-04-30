@@ -8,10 +8,6 @@ import ListItem from '../../components/ListItem'
 import FabButton from '../../components/FabButton';
 
 export default class Members extends Component {
-  state = {
-    bannerVisible: true
-  };
-
   constructor(props) {
     super(props);
 
@@ -49,8 +45,9 @@ export default class Members extends Component {
             })
           }
         </MembersList>
-        <FabButton icon="person-add" onClick={ () => send() }>
-        </FabButton>
+        {
+          this.props.isOwner && <FabButton icon="person-add" onClick={ () => send() } />
+        }
       </Fragment>
     );
   }

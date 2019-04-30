@@ -18,7 +18,8 @@ class TestDetailsScreen extends Component {
     ],
     artifacts: [],
     people: [],
-    readingStatus: null
+    readingStatus: null,
+    isOwner: true
   };
 
   constructor(props) {
@@ -30,10 +31,10 @@ class TestDetailsScreen extends Component {
 
   async componentDidMount() {
     const { navigation, oneInstance } = this.props;
-    const { ipfs, ipns, secret, ipnsKeyCreated } = navigation.state.params;
+    const { ipfs, ipns, secret, ipnsKeyCreated, isOwner } = navigation.state.params;
     let test = null;
 
-    if (ipnsKeyCreated) {
+    if (!isOwner && ipnsKeyCreated) {
       test = await oneInstance.getTestbyIPNS(ipns, secret);
     } else {
       test = await oneInstance.getTestbyIPFS(ipfs, secret);
@@ -49,7 +50,8 @@ class TestDetailsScreen extends Component {
 
     return this.setState({
       artifacts: test.metadata.artifacts,
-      people: test.metadata.members
+      people: test.metadata.members,
+      isOwner
     });
   }
 
@@ -58,13 +60,20 @@ class TestDetailsScreen extends Component {
   _renderScene = ({ route }) => {
     switch (route.key) {
       case 'artifacts':
-        return <Artifacts items={ this.state.artifacts } />;
+        return <Artifacts items={ this.state.artifacts } isOwner={ this.state.isOwner } />;
       case 'people':
-        return <Members items={ this.state.people } />
+        return <Members items={ this.state.people } isOwner={ this.state.isOwner } />
     }
   };
 
-  showDialog() {
+  async showDialog() {
+    const { navigation, oneInstance } = this.props;
+    const { ipfs, ipnsKeyCreated, metadata } = navigation.state.params;
+
+    if (!ipnsKeyCreated) {
+      await oneInstance.publishToIPNS(ipfs, metadata.name);
+    }
+
     return this.setState({
       dialogVisible: true
     });

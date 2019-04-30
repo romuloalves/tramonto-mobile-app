@@ -9,10 +9,6 @@ import { List } from 'react-native-paper';
 import FabButton from '../../components/FabButton';
 
 export default class Artifacts extends Component {
-  state = {
-    bannerVisible: true
-  };
-
   constructor(props) {
     super(props);
 
@@ -41,8 +37,9 @@ export default class Artifacts extends Component {
             ))
           }
         </ArtifactsList>
-        <FabButton icon="cloud-upload" onClick={ () => send() }>
-        </FabButton>
+        {
+          this.props.isOwner && <FabButton icon="cloud-upload" onClick={ () => send() } />
+        }
       </Fragment>
     );
   }

@@ -37,8 +37,12 @@ class NewTestScreen extends Component {
       buttonText: 'Publicando'
     }, async () => {
       const { snackbarContext, oneInstance, navigation } = this.props;
-      const { name, description } = this.state;
+      const { name, description, publishTest } = this.state;
       const createdTest = await oneInstance.createTest(name, description);
+
+      if (publishTest) {
+        await oneInstance.publishToIPNS(createdTest.ipfs, name);
+      }
 
       snackbarContext.setSnackBarText('Teste publicado!');
       snackbarContext.toggleSnackBar(true);
