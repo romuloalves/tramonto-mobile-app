@@ -71,7 +71,9 @@ class TestDetailsScreen extends Component {
     const { ipfs, ipnsKeyCreated, metadata } = navigation.state.params;
 
     if (!ipnsKeyCreated) {
-      await oneInstance.publishToIPNS(ipfs, metadata.name);
+      const testingResp = await oneInstance.publishToIPNSAsync(ipfs, metadata.name, v => alert(v));
+
+      alert(testingResp);
     }
 
     return this.setState({

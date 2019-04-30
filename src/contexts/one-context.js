@@ -1,5 +1,5 @@
 import { createContext } from 'react';
-import { NativeModules } from 'react-native';
+import { NativeModules, DeviceEventEmitter } from 'react-native';
 import RNFS from 'react-native-fs';
 
 const { TramontoOne } = NativeModules;
@@ -14,6 +14,12 @@ function fromJSON(json) {
   const data = JSON.parse(json);
 
   return data;
+}
+
+class OneCallback {
+  sendResult(value) {
+    alert(value);
+  }
 }
 
 export const contextFunctions = {
@@ -129,6 +135,17 @@ export const contextFunctions = {
           return reject(error);
         }
 
+        return resolve(data);
+      });
+    });
+  },
+
+
+  publishToIPNSAsync(hash, name, callback) {
+    DeviceEventEmitter.addListener('shareTestAsync', data => alert(data));
+
+    return new Promise(function(resolve) {
+      TramontoOne.test(hash, name, function publishToIpnsCallback(data) {
         return resolve(data);
       });
     });
