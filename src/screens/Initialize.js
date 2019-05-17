@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { View, StyleSheet } from 'react-native';
-import { ActivityIndicator, Button, Headline } from 'react-native-paper';
-import RNExitApp from 'react-native-exit-app';
+import { ActivityIndicator, Headline } from 'react-native-paper';
 
 import { OneContext } from '../contexts/one-context';
 
@@ -24,10 +23,6 @@ class InitializeScreen extends Component {
           size="large">
         </ActivityIndicator>
         <Headline style={ styles.title }>Inicializando</Headline>
-        <Button mode="outlined"
-          onPress={ () => RNExitApp.exitApp() }>
-          Fechar
-        </Button>
       </View>
     );
   }

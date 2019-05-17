@@ -7,7 +7,6 @@ import com.reactnativedocumentpicker.ReactNativeDocumentPicker;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 import com.rnfs.RNFSPackage;
-import com.github.wumke.RNExitApp.RNExitAppPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
@@ -32,8 +31,7 @@ public class MainApplication extends Application implements ReactApplication {
             new TramontoOnePackage(),
               (ReactPackage) new VectorIconsPackage(),
             new RNGestureHandlerPackage(),
-            new RNFSPackage(),
-            new RNExitAppPackage()
+            new RNFSPackage()
       );
     }
 
