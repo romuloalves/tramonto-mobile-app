@@ -5,10 +5,7 @@ import {
   Button,
   Dialog,
   ActivityIndicator,
-  Headline,
-  Switch,
-  Text,
-  HelperText
+  Headline
 } from 'react-native-paper';
 import { StackActions, NavigationActions } from 'react-navigation';
 
@@ -19,7 +16,6 @@ class NewTestScreen extends Component {
   state = {
     name: '',
     description: '',
-    publishTest: false,
     loading: false,
     buttonText: 'Publicar',
     publishingStatus: null
@@ -35,27 +31,25 @@ class NewTestScreen extends Component {
     this.setState({
       loading: true,
       buttonText: 'Publicando'
-    }, async () => {
-      const { snackbarContext, oneInstance, navigation } = this.props;
-      const { name, description, publishTest } = this.state;
-      const createdTest = await oneInstance.createTest(name, description);
+    }, () => {
+      setTimeout(async () => {
+        const { snackbarContext, oneInstance, navigation } = this.props;
+        const { name, description } = this.state;
+        const createdTest = await oneInstance.createTest(name, description);
 
-      if (publishTest) {
-        await oneInstance.publishToIPNS(createdTest.ipfs, name);
-      }
+        snackbarContext.setSnackBarText('Teste publicado!');
+        snackbarContext.toggleSnackBar(true);
 
-      snackbarContext.setSnackBarText('Teste publicado!');
-      snackbarContext.toggleSnackBar(true);
+        const resetActions = StackActions.reset({
+          index: 0,
+          actions: [
+            NavigationActions.navigate({ routeName: 'Main' })
+          ]
+        });
 
-      const resetActions = StackActions.reset({
-        index: 0,
-        actions: [
-          NavigationActions.navigate({ routeName: 'Main' })
-        ]
-      });
-
-      navigation.dispatch(resetActions);
-      navigation.navigate('Details', createdTest);
+        navigation.dispatch(resetActions);
+        navigation.navigate('Details', createdTest);
+      }, 2000);
     });
   }
 
@@ -74,7 +68,8 @@ class NewTestScreen extends Component {
             maxLength={ 6 }
             autoCapitalize="characters"
             returnKeyType="next"
-            disabled={ loading } />
+            disabled={ loading }
+            blurOnSubmit={ true }/>
           <TextInput
             label="Descrição"
             value={ this.state.description }
@@ -82,16 +77,8 @@ class NewTestScreen extends Component {
             multiline={ true }
             mode="outlined"
             style={{ marginTop: 20, backgroundColor: '#fff' }}
-            disabled={ loading } />
-          <View>
-            <Text>Publicar teste?</Text>
-            <Switch
-              value={ this.state.publishTest }
-              onValueChange={ () => this.setState(prevstate => ({ publishTest: !prevstate.publishTest })) } />
-            <HelperText type="info">
-              Isto pode demorar alguns minutos.
-            </HelperText>
-          </View>
+            disabled={ loading }
+            blurOnSubmit={ true } />
         </View>
         <View>
           <Button mode="contained"
