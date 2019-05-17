@@ -65,8 +65,7 @@ class TestListScreen extends Component {
                 <ListItem key={ `${item.ipfs}+${key}` }
                   title={ item.metadata.name }
                   description={ item.metadata.description }
-                  onClick={ () => this.onListItemClick(item) }
-                  right={ props => <List.Icon {...props} icon="star-border" /> }></ListItem>
+                  onClick={ () => this.onListItemClick(item) }></ListItem>
               );
             })
           }
