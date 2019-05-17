@@ -39,29 +39,23 @@ class AddArtifactScreen extends Component {
     const split = url.split('/');
     const name = split.pop();
     const inbox = split.pop();
-    const realPath = `${RNFS.TemporaryDirectoryPath}${inbox}/${name}`;
+    const realPath = `${RNFS.TemporaryDirectoryPath}/${inbox}/${name}`;
+    const form = new FormData();
 
-    const uploadResponse = RNFS.uploadFiles({
-      fields: {
-        name: this.state.name,
-        description: this.state.description
-      },
-      files: [{
-        name,
-        filetype: this.state.file.type,
-        filepath: realPath,
-        filename: name
-      }],
-      method: 'POST',
-      toUrl: `http://localhost:3000/artifacts/${this.props.navigation.state.params}`,
-      headers: {
-        Accepts: 'application/json'
-      }
+    form.append('name', this.state.name);
+    form.append('description', this.state.description);
+    form.append('artifact', {
+      uri: this.state.file.uri,
+      name: name,
+      type: this.state.file.type
     });
 
-    const result = await uploadResponse.promise;
+    const response = await fetch(`http://localhost:3000/artifacts/${this.props.navigation.state.params.ipns}`, {
+      method: 'POST',
+      body: form
+    });
 
-    alert(JSON.stringify(result));
+    alert(JSON.stringify(response));
   }
 
   selectFile() {
@@ -93,7 +87,6 @@ class AddArtifactScreen extends Component {
             onChangeText={ name => this.setState({ name }) }
             mode="outlined"
             style={{ backgroundColor: '#fff' }}
-            maxLength={ 6 }
             autoCapitalize="characters"
             returnKeyType="next"
             disabled={ loading } />
@@ -106,7 +99,7 @@ class AddArtifactScreen extends Component {
             style={{ marginTop: 20, backgroundColor: '#fff' }}
             disabled={ loading } />
           <Button mode="contained"
-            style={{ backgroundColor: 'rgb(220, 64, 69)', height: 45, justifyContent: 'center' }}
+            style={{ backgroundColor: 'rgb(220, 64, 69)', height: 45, marginTop: 20, justifyContent: 'center' }}
             onPress={ () => this.selectFile() }
             disabled={ loading }>
             Selecionar
