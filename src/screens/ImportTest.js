@@ -24,24 +24,26 @@ class ImportTestScreen extends Component {
     this.setState({
       loading: true,
       buttonText: 'Importando'
-    }, async () => {
-      const { hash, secret } = this.state;
-      const { oneContext, snackbarContext } = this.props;
+    }, () => {
+      setTimeout(async () => {
+        const { hash, secret } = this.state;
+        const { oneContext, snackbarContext } = this.props;
 
-      const importedTest = await oneContext.importTest(hash, secret);
+        const importedTest = await oneContext.importTest(hash, secret);
 
-      snackbarContext.setSnackBarText('Teste importado!');
-      snackbarContext.toggleSnackBar(true);
+        snackbarContext.setSnackBarText('Teste importado!');
+        snackbarContext.toggleSnackBar(true);
 
-      const resetActions = StackActions.reset({
-        index: 0,
-        actions: [
-          NavigationActions.navigate({ routeName: 'Main' })
-        ]
+        const resetActions = StackActions.reset({
+          index: 0,
+          actions: [
+            NavigationActions.navigate({ routeName: 'Main' })
+          ]
+        });
+
+        navigation.dispatch(resetActions);
+        navigation.navigate('Details', importedTest);
       });
-
-      navigation.dispatch(resetActions);
-      navigation.navigate('Details', importedTest);
     });
   }
 
