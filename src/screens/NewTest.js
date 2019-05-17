@@ -28,11 +28,11 @@ class NewTestScreen extends Component {
   }
 
   createNewTest() {
-    this.setState({
-      loading: true,
-      buttonText: 'Publicando'
-    }, () => {
-      setTimeout(async () => {
+    requestAnimationFrame(() => {
+      this.setState({
+        loading: true,
+        buttonText: 'Publicando'
+      }, async () => {
         const { snackbarContext, oneInstance, navigation } = this.props;
         const { name, description } = this.state;
         const createdTest = await oneInstance.createTest(name, description);
@@ -49,7 +49,7 @@ class NewTestScreen extends Component {
 
         navigation.dispatch(resetActions);
         navigation.navigate('Details', createdTest);
-      }, 2000);
+      });
     });
   }
 

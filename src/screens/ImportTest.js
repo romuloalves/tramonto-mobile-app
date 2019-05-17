@@ -21,11 +21,11 @@ class ImportTestScreen extends Component {
   }
 
   importTest() {
-    this.setState({
-      loading: true,
-      buttonText: 'Importando'
-    }, () => {
-      setTimeout(async () => {
+    requestAnimationFrame(() => {
+      this.setState({
+        loading: true,
+        buttonText: 'Importando'
+      }, async () => {
         const { hash, secret } = this.state;
         const { oneContext, snackbarContext } = this.props;
 
