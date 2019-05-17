@@ -3,6 +3,7 @@ package com.tramontoone;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.reactnativedocumentpicker.ReactNativeDocumentPicker;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 import com.rnfs.RNFSPackage;
@@ -25,10 +26,11 @@ public class MainApplication extends Application implements ReactApplication {
 
     @Override
     protected List<ReactPackage> getPackages() {
-      return Arrays.<ReactPackage>asList(
+      return (List<ReactPackage>) Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new ReactNativeDocumentPicker(),
             new TramontoOnePackage(),
-            new VectorIconsPackage(),
+              (ReactPackage) new VectorIconsPackage(),
             new RNGestureHandlerPackage(),
             new RNFSPackage(),
             new RNExitAppPackage()

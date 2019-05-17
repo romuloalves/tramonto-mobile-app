@@ -27,6 +27,7 @@ class TestDetailsScreen extends Component {
 
     this.showDialog = this.showDialog.bind(this);
     this.hideDialog = this.hideDialog.bind(this);
+    this.onAddArtifactClick = this.onAddArtifactClick.bind(this);
   }
 
   async componentDidMount() {
@@ -60,11 +61,19 @@ class TestDetailsScreen extends Component {
   _renderScene = ({ route }) => {
     switch (route.key) {
       case 'artifacts':
-        return <Artifacts items={ this.state.artifacts } isOwner={ this.state.isOwner } />;
+        return (
+          <Artifacts items={ this.state.artifacts }
+            isOwner={ this.state.isOwner }
+            onAddArtifactClick={ this.onAddArtifactClick } />
+        );
       case 'people':
         return <Members items={ this.state.people } isOwner={ this.state.isOwner } />
     }
   };
+
+  onAddArtifactClick() {
+    return this.props.navigation.navigate('AddArtifact', this.props.navigation.state.params.ipns);
+  }
 
   async showDialog() {
     const { navigation, oneInstance } = this.props;

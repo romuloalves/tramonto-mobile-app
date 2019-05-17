@@ -149,6 +149,46 @@ export const contextFunctions = {
         return resolve(data);
       });
     });
+  },
+
+  /**
+   * @function importTest
+   * @description Imports the test
+   * @param  {String} hash IPNS hash of the test
+   * @param  {String} secret Secret to decrypt the test files
+   * @return {Promise<Object>} Test informations
+   */
+  importTest(hash, secret) {
+    return new Promise(function(resolve, reject) {
+      TramontoOne.importTest(hash, secret, function importTestCallback(error, data) {
+        if (error) {
+          return reject(error);
+        }
+
+        return resolve(data);
+      });
+    });
+  },
+
+  /**
+   * @function addMember
+   * @description Adds a new member to the test
+   * @param  {String} hash  IPNS test hash
+   * @param  {String} name  Member name
+   * @param  {String} email Member email
+   * @param  {String} role  Member role
+   * @return {Promise<Object>} Test informations
+   */
+  addMember(hash, name, email, role) {
+    return new Promise(function(resolve, reject) {
+      TramontoOne.addMember(hash, name, email, role, function addMemberCallback(error, data) {
+        if (error) {
+          return reject(error);
+        }
+
+        return resolve(data);
+      });
+    });
   }
 };
 

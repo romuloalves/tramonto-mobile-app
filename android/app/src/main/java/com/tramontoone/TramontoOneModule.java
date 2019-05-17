@@ -1,32 +1,33 @@
 package com.tramontoone;
 
+import android.telecom.Call;
+
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
-import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 import tramonto.*;
 
-class OneCallback implements tramonto.Callback {
-    private ReactApplicationContext context;
-    private String eventName;
-
-    public OneCallback(ReactApplicationContext context, String eventName) {
-        this.context = context;
-        this.eventName = eventName;
-    }
-
-    @Override
-    public void invoke(String data) {
-        if (this.context == null) {
-            return;
-        }
-
-        this.context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-                .emit(eventName, data);
-    }
-}
+//class OneCallback implements tramonto.Callback {
+//    private ReactApplicationContext context;
+//    private String eventName;
+//
+//    public OneCallback(ReactApplicationContext context, String eventName) {
+//        this.context = context;
+//        this.eventName = eventName;
+//    }
+//
+//    @Override
+//    public void invoke(String data) {
+//        if (this.context == null) {
+//            return;
+//        }
+//
+//        this.context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+//                .emit(eventName, data);
+//    }
+//}
 
 public class TramontoOneModule extends ReactContextBaseJavaModule {
     // Tramonto One instance
@@ -150,19 +151,51 @@ public class TramontoOneModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    /* Async */
-    public void test(String ipfsHash, String testName, Callback callback) {
+    /* Imports a test */
+    public void importTest(String ipnsHash, String secret, Callback callback) {
         try {
             if (this.node == null) {
                 throw new Error("Node not started.");
             }
 
-            OneCallback cb = new OneCallback(
-                    this.getReactApplicationContext(),"shareTestAsync");
+            byte[] test = this.node.importTest(ipnsHash, secret);
 
-            this.node.shareTestAsync(ipfsHash, testName, cb);
+            callback.invoke(null, new String(test, "UTF-8"));
         } catch (Exception err) {
-            callback.invoke("Error publishing test async: " + err.getMessage());
+            callback.invoke("Error importing test: " + err.getMessage());
         }
     }
+
+    @ReactMethod
+    /* Adds a member to the test */
+    public void addMember(String ipnsHash, String name, String email, String role, Callback callback) {
+        try {
+            if (this.node == null) {
+                throw new Error("Node not started.");
+            }
+
+            byte[] test = this.node.addMember(ipnsHash, name, email, role);
+
+            callback.invoke(null, new String(test, "UTF-8"));
+        } catch (Exception err) {
+            callback.invoke("Error adding member to test: " + err.getMessage());
+        }
+    }
+
+//    @ReactMethod
+    /* Async */
+//    public void test(String ipfsHash, String testName, Callback callback) {
+//        try {
+//            if (this.node == null) {
+//                throw new Error("Node not started.");
+//            }
+//
+//            OneCallback cb = new OneCallback(
+//                    this.getReactApplicationContext(),"shareTestAsync");
+//
+//            this.node.shareTestAsync(ipfsHash, testName, cb);
+//        } catch (Exception err) {
+//            callback.invoke("Error publishing test async: " + err.getMessage());
+//        }
+//    }
 }

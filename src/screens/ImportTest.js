@@ -3,6 +3,7 @@ import { View, StyleSheet } from 'react-native';
 import { TextInput, Button, Dialog, ActivityIndicator, Headline } from 'react-native-paper';
 
 import { SnackbarContext } from '../contexts/snackbar-context';
+import { OneContext } from '../contexts/one-context';
 
 class ImportTestScreen extends Component {
   state = {
@@ -19,53 +20,28 @@ class ImportTestScreen extends Component {
     this.importTest = this.importTest.bind(this);
   }
 
-  componentDidMount() {
-    // const bridgeContext = this.props.bridgeContext;
-
-    // bridgeContext.onImportTestProgress(payload => {
-    //   return this.setState({
-    //     importingStatus: payload
-    //   });
-    // });
-
-    // bridgeContext.onImportTestMessage(payload => {
-    //   this.setState({ loading: false, importingStatus: null }, async () => {
-    //     const snackContext = this.props.snackbarContext;
-
-    //     snackContext.setSnackBarText('Teste importado!');
-    //     snackContext.toggleSnackBar(true);
-
-    //     const newTest = {
-    //       name: payload.name,
-    //       description: payload.description,
-    //       hash: payload.hash,
-    //       secret: payload.secret,
-    //       ipfs: payload.ipfs
-    //     };
-
-    //     await Tests.addTest(newTest);
-
-    //     const resetActions = StackActions.reset({
-    //       index: 0,
-    //       actions: [
-    //         NavigationActions.navigate({ routeName: 'Home' })
-    //       ]
-    //     });
-
-    //     this.props.navigation.dispatch(resetActions);
-    //   });
-    // });
-  }
-
   importTest() {
     this.setState({
       loading: true,
       buttonText: 'Importando'
-    }, () => {
+    }, async () => {
       const { hash, secret } = this.state;
-      // const bridgeContext = this.props.bridgeContext;
+      const { oneContext, snackbarContext } = this.props;
 
-      // bridgeContext.importTest(hash, secret);
+      const importedTest = await oneContext.importTest(hash, secret);
+
+      snackbarContext.setSnackBarText('Teste importado!');
+      snackbarContext.toggleSnackBar(true);
+
+      const resetActions = StackActions.reset({
+        index: 0,
+        actions: [
+          NavigationActions.navigate({ routeName: 'Main' })
+        ]
+      });
+
+      navigation.dispatch(resetActions);
+      navigation.navigate('Details', importedTest);
     });
   }
 
@@ -134,8 +110,15 @@ export default function ImportTestScreenContainer(props) {
     <SnackbarContext.Consumer>
       {
         snackBarContext => (
-          <ImportTestScreen snackbarContext={ snackBarContext }
-            { ...props } />
+          <OneContext.Consumer>
+            {
+              oneContext => (
+                <ImportTestScreen snackbarContext={ snackBarContext }
+                  oneContext={ oneContext }
+                  { ...props } />
+              )
+            }
+          </OneContext.Consumer>
         )
       }
     </SnackbarContext.Consumer>

@@ -16,13 +16,16 @@ export default class Artifacts extends Component {
   }
 
   onListItemClick(item) {
-    this.props.navigation.navigate('Details', item);
+    if (!this.props.onArtifactDownload) {
+      return;
+    }
 
-    return;
+    return this.props.onArtifactDownload(item.hash);
   }
 
   render() {
     const items = this.props.items;
+    const addArtifactClick = this.props.onAddArtifactClick;
 
     return (
       <Fragment>
@@ -38,7 +41,7 @@ export default class Artifacts extends Component {
           }
         </ArtifactsList>
         {
-          this.props.isOwner && <FabButton icon="cloud-upload" onClick={ () => send() } />
+          this.props.isOwner && addArtifactClick && <FabButton icon="cloud-upload" onClick={ () => addArtifactClick() } />
         }
       </Fragment>
     );
