@@ -56,4 +56,4 @@ buck-out/
 *.jsbundle
 
 # Don't add my project .aar
-android/Tramonto/
+*.aar
