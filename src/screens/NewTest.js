@@ -2,10 +2,7 @@ import React, { Component } from 'react';
 import { View, StyleSheet } from 'react-native';
 import {
   TextInput,
-  Button,
-  Dialog,
-  ActivityIndicator,
-  Headline
+  Button
 } from 'react-native-paper';
 import { StackActions, NavigationActions } from 'react-navigation';
 
@@ -29,32 +26,42 @@ class NewTestScreen extends Component {
 
   createNewTest() {
     requestAnimationFrame(() => {
-      this.setState({
+      this.setState(() => ({
         loading: true,
         buttonText: 'Publicando'
-      }, async () => {
-        const { snackbarContext, oneInstance, navigation } = this.props;
-        const { name, description } = this.state;
-        const createdTest = await oneInstance.createTest(name, description);
+      }));
 
-        snackbarContext.setSnackBarText('Teste publicado!');
-        snackbarContext.toggleSnackBar(true);
+      const { snackbarContext, oneInstance, navigation } = this.props;
+      const { name, description } = this.state;
 
-        const resetActions = StackActions.reset({
-          index: 0,
-          actions: [
-            NavigationActions.navigate({ routeName: 'Main' })
-          ]
+      setTimeout(() => {
+        oneInstance.createTest(name, description, (err, createdTest) => {
+          if (err) {
+            snackbarContext.setSnackBarText('Ocorreu um erro!');
+          } else {
+            snackbarContext.setSnackBarText('Teste publicado!');
+          }
+
+          snackbarContext.toggleSnackBar(true);
+
+          const resetActions = StackActions.reset({
+            index: 0,
+            actions: [
+              NavigationActions.navigate({ routeName: 'Main' })
+            ]
+          });
+
+          const pageToNavigate = err ? 'Main' : 'Details';
+
+          navigation.dispatch(resetActions);
+          navigation.navigate(pageToNavigate, createdTest);
         });
-
-        navigation.dispatch(resetActions);
-        navigation.navigate('Details', createdTest);
-      });
+      }, 50);
     });
   }
 
   render() {
-    const { buttonText, loading, publishingStatus } = this.state;
+    const { buttonText, loading } = this.state;
 
     return (
       <View style={ styles.view }>
@@ -89,18 +96,6 @@ class NewTestScreen extends Component {
             { buttonText }
           </Button>
         </View>
-        <Dialog visible={ publishingStatus !== null }
-          dismissable={ false }>
-          <Dialog.Content>
-            <ActivityIndicator animating={ true }
-              color="rgb(30, 45, 62)"
-              size="large">
-            </ActivityIndicator>
-            <Headline style={{ textAlign: 'center', marginTop: 20 }}>
-              { publishingStatus }
-            </Headline>
-          </Dialog.Content>
-        </Dialog>
       </View>
     );
   }

@@ -1,12 +1,13 @@
 import React, { Component, Fragment } from 'react';
-import { Appbar, BottomNavigation, Portal, Dialog, Headline, ActivityIndicator } from 'react-native-paper';
+import { Appbar, BottomNavigation, Portal, Dialog } from 'react-native-paper';
+import RNFS from 'react-native-fs';
+import FileViewer from 'react-native-file-viewer';
+
+import Artifacts from './Artifacts';
 
 import { OneContext } from '../../contexts/one-context';
 
 import ShareDialog from './ShareDialog';
-
-import Artifacts from './Artifacts';
-import Members from './Members';
 
 class TestDetailsScreen extends Component {
   state = {
@@ -28,6 +29,8 @@ class TestDetailsScreen extends Component {
     this.showDialog = this.showDialog.bind(this);
     this.hideDialog = this.hideDialog.bind(this);
     this.onAddArtifactClick = this.onAddArtifactClick.bind(this);
+    this.onArtifactDownload = this.onArtifactDownload.bind(this);
+    this.onAddMemberClick = this.onAddMemberClick.bind(this);
   }
 
   async componentDidMount() {
@@ -56,7 +59,13 @@ class TestDetailsScreen extends Component {
     });
   }
 
-  _handleIndexChange = index => this.setState({ index });
+  _handleIndexChange = index => {
+    requestAnimationFrame(() => {
+      this.setState(() => ({
+        index
+      }));
+    });
+  }
 
   _renderScene = ({ route }) => {
     switch (route.key) {
@@ -64,40 +73,74 @@ class TestDetailsScreen extends Component {
         return (
           <Artifacts items={ this.state.artifacts }
             isOwner={ this.state.isOwner }
-            onAddArtifactClick={ this.onAddArtifactClick } />
+            onAddArtifactClick={ this.onAddArtifactClick }
+            onArtifactDownload={ this.onArtifactDownload } />
         );
       case 'people':
-        return <Members items={ this.state.people } isOwner={ this.state.isOwner } />
+        const Members = require('./Members').default;
+
+        return (
+          <Members items={ this.state.people }
+            isOwner={ this.state.isOwner }
+            onAddMemberClick={ this.onAddMemberClick } />
+        );
     }
   };
 
   onAddArtifactClick() {
-    return this.props.navigation.navigate('AddArtifact', this.props.navigation.state.params.ipns);
+    requestAnimationFrame(() => this.props.navigation.navigate('AddArtifact', this.props.navigation.state.params));
+  }
+
+  onArtifactDownload(fileHash) {
+    requestAnimationFrame(async () => {
+      const { ipns } = this.props.navigation.state.params;
+      const localFilePath = `${RNFS.CachesDirectoryPath}/${new Date().getTime()}`;
+
+      await RNFS.downloadFile({
+        cacheable: true,
+        fromUrl: `http://localhost:3000/artifacts/${ipns}/${fileHash}`,
+        toFile: localFilePath,
+        begin: () => alert('iniciando')
+      }).promise;
+
+      FileViewer.open(localFilePath, {
+        showAppsSuggestions: true,
+        showOpenWithDialog: true
+      });
+    });
+  }
+
+  onAddMemberClick() {
+    requestAnimationFrame(() => this.props.navigation.navigate('AddMember', this.props.navigation.state.params));
   }
 
   async showDialog() {
-    const { navigation, oneInstance } = this.props;
-    const { ipfs, ipnsKeyCreated, metadata } = navigation.state.params;
+    requestAnimationFrame(async () => {
+      const { navigation, oneInstance } = this.props;
+      const { ipfs, ipnsKeyCreated, metadata } = navigation.state.params;
 
-    if (!ipnsKeyCreated) {
-      const testingResp = await oneInstance.publishToIPNSAsync(ipfs, metadata.name, v => alert(v));
+      if (!ipnsKeyCreated) {
+        const testingResp = await oneInstance.publishToIPNSAsync(ipfs, metadata.name, v => alert(v));
 
-      alert(testingResp);
-    }
+        alert(testingResp);
+      }
 
-    return this.setState({
-      dialogVisible: true
+      this.setState({
+        dialogVisible: true
+      });
     });
   }
 
   hideDialog() {
-    return this.setState({
-      dialogVisible: false
+    requestAnimationFrame(() => {
+      this.setState({
+        dialogVisible: false
+      });
     });
   }
 
   render() {
-    const { dialogVisible, readingStatus } = this.state;
+    const { dialogVisible } = this.state;
     const { metadata, ipns, secret, ipfs } = this.props.navigation.state.params;
 
     return (
@@ -119,18 +162,6 @@ class TestDetailsScreen extends Component {
           navigationState={ this.state }
           onIndexChange={ this._handleIndexChange }
           renderScene={ this._renderScene } />
-          <Dialog visible={ readingStatus !== null }
-            dismissable={ false }>
-            <Dialog.Content>
-              <ActivityIndicator animating={ true }
-                color="rgb(30, 45, 62)"
-                size="large">
-              </ActivityIndicator>
-              <Headline style={{ textAlign: 'center', marginTop: 20 }}>
-                { readingStatus }
-              </Headline>
-            </Dialog.Content>
-          </Dialog>
       </Fragment>
     );
   }

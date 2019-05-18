@@ -1,17 +1,12 @@
 import React, { Component } from 'react';
 import { View, StyleSheet } from 'react-native';
-import RNFS from 'react-native-fs';
 import {
   TextInput,
   Button,
   Dialog,
   ActivityIndicator,
-  Headline,
-  Switch,
-  Text,
-  HelperText
+  Headline
 } from 'react-native-paper';
-import { StackActions, NavigationActions } from 'react-navigation';
 import { DocumentPicker, DocumentPickerUtil } from 'react-native-document-picker';
 
 import { SnackbarContext } from '../../contexts/snackbar-context';
@@ -34,28 +29,42 @@ class AddArtifactScreen extends Component {
     this.selectFile = this.selectFile.bind(this);
   }
 
-  async addArtifact() {
-    const url = this.state.file.uri;
-    const split = url.split('/');
-    const name = split.pop();
-    const inbox = split.pop();
-    const realPath = `${RNFS.TemporaryDirectoryPath}/${inbox}/${name}`;
-    const form = new FormData();
+  addArtifact() {
+    requestAnimationFrame(() => {
+      this.setState({
+        loading: true,
+        buttonText: 'Adicionando'
+      }, async () => {
+        const { snackbarContext } = this.props;
+        const url = this.state.file.uri;
+        const split = url.split('/');
+        const name = split.pop();
+        const form = new FormData();
 
-    form.append('name', this.state.name);
-    form.append('description', this.state.description);
-    form.append('artifact', {
-      uri: this.state.file.uri,
-      name: name,
-      type: this.state.file.type
+        form.append('name', this.state.name);
+        form.append('description', this.state.description);
+        form.append('artifact', {
+          uri: this.state.file.uri,
+          name: name,
+          type: this.state.file.type
+        });
+
+        const response = await fetch(`http://localhost:3000/artifacts/${this.props.navigation.state.params.ipns}`, {
+          method: 'POST',
+          body: form
+        });
+
+        if (response.code !== 200) {
+          snackbarContext.setSnackBarText('Ocorreu um erro.');
+        } else {
+          snackbarContext.setSnackBarText('Artefato adicionado!');
+        }
+
+        snackbarContext.toggleSnackBar(true);
+
+        this.props.navigation.goBack();
+      });
     });
-
-    const response = await fetch(`http://localhost:3000/artifacts/${this.props.navigation.state.params.ipns}`, {
-      method: 'POST',
-      body: form
-    });
-
-    alert(JSON.stringify(response));
   }
 
   selectFile() {
@@ -109,7 +118,7 @@ class AddArtifactScreen extends Component {
           <Button mode="contained"
             loading={ loading }
             style={{ backgroundColor: 'rgb(220, 64, 69)', height: 45, justifyContent: 'center' }}
-            onPress={ async () => await this.addArtifact() }
+            onPress={ () => this.addArtifact() }
             disabled={ loading }>
             { buttonText }
           </Button>

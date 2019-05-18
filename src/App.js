@@ -5,22 +5,16 @@ import { DefaultTheme, Provider as PaperProvider, Snackbar } from 'react-native-
 import { OneContext, contextFunctions } from './contexts/one-context';
 import { SnackbarContext } from './contexts/snackbar-context';
 
-// Screens
-import TestListScreen from './screens/TestList';
-import TestDetails from './screens/TestDetails/TestDetails';
-import NewTestScreen from './screens/NewTest';
-import ImportTestScreen from './screens/ImportTest';
-import AddArtifactScreen from './screens/TestDetails/AddArtifact';
-
 // Modals
 import Initialize from './screens/Initialize';
 
 const MainNavigator = createStackNavigator({
-  Home: { screen: TestListScreen },
-  Details: { screen: TestDetails },
-  NewTest: { screen: NewTestScreen },
-  ImportTest: { screen: ImportTestScreen },
-  AddArtifact: { screen: AddArtifactScreen }
+  Home: { screen: require('./screens/TestList').default },
+  Details: { screen: require('./screens/TestDetails/TestDetails').default },
+  NewTest: { screen: require('./screens/NewTest').default },
+  ImportTest: { screen: require('./screens/ImportTest').default },
+  AddArtifact: { screen: require('./screens/TestDetails/AddArtifact').default },
+  AddMember: { screen: require('./screens/TestDetails/AddMember').default }
 }, {
   initialRouteName: 'Home',
   defaultNavigationOptions: {
@@ -88,21 +82,6 @@ export default class extends Component {
       toggleSnackBar,
       setSnackBarText
     };
-  }
-
-  async componentDidMount() {
-    // alert('Starting setup');
-
-    // try {
-    // // const instance = new One();
-
-    // // await instance.setup();
-    //   // await this.context.initialize();
-
-    //   return alert('Repo started!!!! :X');
-    // } catch (err) {
-    //   alert('Error starting repo: ' + err);
-    // }
   }
 
   render() {

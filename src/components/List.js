@@ -1,10 +1,11 @@
 import React from 'react';
-import { ScrollView } from 'react-native';
+import { FlatList } from 'react-native';
 
-export default function List({ children }) {
+export default function List({ data, keyExtractor, renderItem }) {
   return (
-    <ScrollView style={{ backgroundColor: 'white' }}>
-      { children }
-    </ScrollView>
+    <FlatList style={{ backgroundColor: 'white' }}
+      data={ data }
+      keyExtractor={ keyExtractor }
+      renderItem={ renderItem } />
   );
 }

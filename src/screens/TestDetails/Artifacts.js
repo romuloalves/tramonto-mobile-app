@@ -1,18 +1,36 @@
 
-import React, { Component, Fragment } from 'react';
+import React, { PureComponent, Fragment } from 'react';
 
 import ArtifactsList from '../../components/List';
 import ListItem from '../../components/ListItem'
 
 import { List } from 'react-native-paper';
 
-import FabButton from '../../components/FabButton';
+let FabButton = null;
 
-export default class Artifacts extends Component {
+export default class Artifacts extends PureComponent {
+  state = {
+    isFabLoaded: false
+  };
+
   constructor(props) {
     super(props);
 
     this.onListItemClick = this.onListItemClick.bind(this);
+  }
+
+  componentDidMount() {
+    if (!this.props.isOwner || !this.props.onAddArtifactClick) {
+      return;
+    }
+
+    if (FabButton === null) {
+      FabButton = require('../../components/FabButton').default;
+    }
+
+    this.setState(() => ({
+      isFabLoaded: true
+    }));
   }
 
   onListItemClick(item) {
@@ -24,24 +42,18 @@ export default class Artifacts extends Component {
   }
 
   render() {
-    const items = this.props.items;
-    const addArtifactClick = this.props.onAddArtifactClick;
-
     return (
       <Fragment>
-        <ArtifactsList>
-          {
-            items.map((item, key) => (
-              <ListItem key={ key }
-                title={ item.name }
-                description={ item.description }
-                onClick={ () => this.onListItemClick(item) }
-                right={ props => <List.Icon {...props} icon="cloud-download" /> }></ListItem>
-            ))
-          }
-        </ArtifactsList>
+        <ArtifactsList data={ this.props.items }
+          keyExtractor={ item => item.hash }
+          renderItem={ ({ item }) => (
+            <ListItem title={ item.name }
+              description={ item.description }
+              onClick={ () => this.onListItemClick(item) }
+              right={ props => <List.Icon {...props} icon="cloud-download" /> }></ListItem>
+          ) } />
         {
-          this.props.isOwner && addArtifactClick && <FabButton icon="cloud-upload" onClick={ () => addArtifactClick() } />
+          this.state.isFabLoaded && <FabButton icon="cloud-upload" onClick={ () => this.props.onAddArtifactClick() } />
         }
       </Fragment>
     );

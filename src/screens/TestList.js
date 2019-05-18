@@ -3,12 +3,13 @@ import React, { Component, Fragment } from 'react';
 import TestsList from '../components/List';
 import ListItem from '../components/ListItem';
 
-import { List, FAB } from 'react-native-paper';
-
 import { OneContext } from '../contexts/one-context';
+
+let FABGroup = null;
 
 class TestListScreen extends Component {
   state = {
+    isFabLoaded: false,
     isFabOpen: false,
     tests: []
   };
@@ -16,6 +17,7 @@ class TestListScreen extends Component {
   constructor(props) {
     super(props);
 
+    this.toggleFab = this.toggleFab.bind(this);
     this.onListItemClick = this.onListItemClick.bind(this);
     this.onNewTestClick = this.onNewTestClick.bind(this);
     this.onImportTestClick = this.onImportTestClick.bind(this);
@@ -26,66 +28,88 @@ class TestListScreen extends Component {
 
     navigation.addListener('willFocus', () => this.loadTests());
 
-    await this.loadTests();
+    this.loadTests();
+
+    if (FABGroup === null) {
+      FABGroup = require('react-native-paper').FAB.Group;
+    }
+
+    this.setState(() => ({
+      isFabLoaded: true
+    }));
   }
 
-  async loadTests() {
-    return this.setState({
-      tests: await this.props.oneInstance.getTests()
+  loadTests() {
+    this.props.oneInstance.getTests((err, data) => {
+      if (err) {
+        return;
+      }
+
+      this.setState(() => ({
+        tests: data
+      }));
+    });
+  }
+
+  toggleFab() {
+    requestAnimationFrame(() => {
+      return this.setState(({ isFabOpen }) => ({
+        isFabOpen: !isFabOpen
+      }));
     });
   }
 
   onListItemClick(item) {
-    this.props.navigation.navigate('Details', item);
-
-    return;
+    requestAnimationFrame(() => {
+      this.props.navigation.navigate('Details', item);
+    });
   }
 
   onNewTestClick() {
-    this.props.navigation.navigate('NewTest');
-
-    return;
+    requestAnimationFrame(() => {
+      this.props.navigation.navigate('NewTest');
+    });
   }
 
   onImportTestClick() {
-    this.props.navigation.navigate('ImportTest');
-
-    return;
+    requestAnimationFrame(() => {
+      this.props.navigation.navigate('ImportTest');
+    });
   }
 
   render() {
-    const { tests, isFabOpen } = this.state;
+    const { tests, isFabOpen, isFabLoaded } = this.state;
 
     return (
       <Fragment>
-        <TestsList>
-          {
-            tests.map((item, key) => {
-              return (
-                <ListItem key={ `${item.ipfs}+${key}` }
-                  title={ item.metadata.name }
-                  description={ item.metadata.description }
-                  onClick={ () => this.onListItemClick(item) }></ListItem>
-              );
-            })
-          }
-        </TestsList>
-        <FAB.Group
-          open={ isFabOpen }
-          icon={ isFabOpen ? 'close' : 'add' }
-          actions={[
-            {
-              icon: 'add',
-              label: 'Novo teste',
-              onPress: () => this.onNewTestClick()
-            },
-            {
-              icon: 'cloud-download',
-              label: 'Importar teste',
-              onPress: () => this.onImportTestClick()
-            }
-          ]}
-          onStateChange={ ({ open }) => this.setState({ isFabOpen: open }) } />
+        <TestsList data={ tests }
+          keyExtractor={ item => item.ipfs }
+          renderItem={ ({ item }) => (
+            <ListItem title={ item.metadata.name }
+              description={ item.metadata.description }
+              onClick={ () => this.onListItemClick(item) }></ListItem>
+          ) } />
+
+        {
+          isFabLoaded && (
+            <FABGroup
+              open={ isFabOpen }
+              icon={ isFabOpen ? 'close' : 'add' }
+              actions={[
+                {
+                  icon: 'add',
+                  label: 'Novo teste',
+                  onPress: () => this.onNewTestClick()
+                },
+                {
+                  icon: 'cloud-download',
+                  label: 'Importar teste',
+                  onPress: () => this.onImportTestClick()
+                }
+              ]}
+              onStateChange={ this.toggleFab } />
+          )
+        }
       </Fragment>
     );
   }

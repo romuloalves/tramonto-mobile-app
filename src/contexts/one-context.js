@@ -42,19 +42,17 @@ export const contextFunctions = {
   /**
    * @function getTests
    * @description Returns the list of tests
-   * @return {Promise<Array<Test>>} List of tests
+   * @param  {Function} callback Callback to receive the tests list
    */
-  getTests() {
-    return new Promise(function(resolve, reject) {
-      TramontoOne.getTests(function getTestsCallback(error, data) {
-        if (error) {
-          return reject(error);
-        }
+  getTests(callback) {
+    TramontoOne.getTests(function getTestsCallback(error, data) {
+      if (error) {
+        callback && callback(error);
+      }
 
-        const tests = JSON.parse(data);
+      const tests = JSON.parse(data);
 
-        return resolve(tests);
-      });
+      callback && callback(null, tests);
     });
   },
 
@@ -63,19 +61,18 @@ export const contextFunctions = {
    * @description Creates a new test
    * @param  {String} name        Name of the test
    * @param  {String} description Description of the test
-   * @return {Promise<Test>} Created test
+   * @param  {Function} [callback] Optional callback to use instead of Promises
    */
-  createTest(name, description) {
-    return new Promise(function(resolve, reject) {
-      TramontoOne.createTest(name, description, function createTestCallback(error, data) {
-        if (error) {
-          return reject(error);
-        }
+  createTest(name, description, callback) {
+    TramontoOne.createTest(name, description, function createTestCallback(error, data) {
+      if (error) {
+        callback && callback(error);
+        return;
+      }
 
-        const test = fromJSON(data);
+      const test = fromJSON(data);
 
-        return resolve(test);
-      });
+      callback && callback(null, test);
     });
   },
 

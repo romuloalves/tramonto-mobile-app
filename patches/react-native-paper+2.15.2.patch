@@ -1,0 +1,289 @@
+diff --git a/node_modules/react-native-paper/src/components/ActivityIndicator.js b/node_modules/react-native-paper/src/components/ActivityIndicator.js
+index 16dfe23..4d66061 100644
+--- a/node_modules/react-native-paper/src/components/ActivityIndicator.js
++++ b/node_modules/react-native-paper/src/components/ActivityIndicator.js
+@@ -166,7 +166,7 @@ class ActivityIndicator extends React.Component<Props, State> {
+ 
+     return (
+       <View style={[styles.container, style]} {...rest}>
+-        <Animated.View style={[{ width: size, height: size, opacity: fade }]}>
++        <Animated.View style={[{ width: size, height: size, opacity: fade }]} collapsable={false}>
+           {[0, 1].map(index => {
+             // Thanks to https://github.com/n4kz/react-native-indicators for the great work
+             const inputRange = Array.from(
+@@ -230,15 +230,15 @@ class ActivityIndicator extends React.Component<Props, State> {
+             };
+ 
+             return (
+-              <Animated.View key={index} style={[styles.layer]}>
+-                <Animated.View style={layerStyle}>
++              <Animated.View key={index} style={[styles.layer]} collapsable={false}>
++                <Animated.View style={layerStyle} collapsable={false}>
+                   <Animated.View
+                     style={[containerStyle, offsetStyle]}
+                     collapsable={false}
+                   >
+-                    <Animated.View style={viewportStyle}>
++                    <Animated.View style={viewportStyle} collapsable={false}>
+                       <Animated.View style={containerStyle} collapsable={false}>
+-                        <Animated.View style={lineStyle} />
++                        <Animated.View style={lineStyle} collapsable={false} />
+                       </Animated.View>
+                     </Animated.View>
+                   </Animated.View>
+diff --git a/node_modules/react-native-paper/src/components/Banner.js b/node_modules/react-native-paper/src/components/Banner.js
+index a977816..ec93841 100644
+--- a/node_modules/react-native-paper/src/components/Banner.js
++++ b/node_modules/react-native-paper/src/components/Banner.js
+@@ -184,8 +184,8 @@ class Banner extends React.Component<Props, State> {
+     return (
+       <Surface {...rest} style={[styles.container, shadow(ELEVATION), style]}>
+         <View style={styles.wrapper}>
+-          <Animated.View style={{ height }} />
+-          <Animated.View
++          <Animated.View style={{ height }} collapsable={false} />
++          <Animated.View collapsable={false}
+             onLayout={this._handleLayout}
+             style={[
+               layout.measured || !visible
+diff --git a/node_modules/react-native-paper/src/components/BottomNavigation.js b/node_modules/react-native-paper/src/components/BottomNavigation.js
+index 28dff89..c90e8fe 100644
+--- a/node_modules/react-native-paper/src/components/BottomNavigation.js
++++ b/node_modules/react-native-paper/src/components/BottomNavigation.js
+@@ -628,7 +628,7 @@ class BottomNavigation<T: *> extends React.Component<Props<T>, State> {
+             const focused = navigationState.index === index;
+ 
+             return (
+-              <Animated.View
++              <Animated.View collapsable={false}
+                 key={route.key}
+                 pointerEvents={focused ? 'auto' : 'none'}
+                 accessibilityElementsHidden={!focused}
+@@ -643,7 +643,7 @@ class BottomNavigation<T: *> extends React.Component<Props<T>, State> {
+                   Platform.OS === 'ios' ? navigationState.index !== index : true
+                 }
+               >
+-                <Animated.View style={[styles.content, { top }]}>
++                <Animated.View style={[styles.content, { top }]} collapsable={false}>
+                   {renderScene({
+                     route,
+                     jumpTo: this._jumpTo,
+@@ -679,13 +679,13 @@ class BottomNavigation<T: *> extends React.Component<Props<T>, State> {
+           }
+           onLayout={this._handleLayout}
+         >
+-          <Animated.View style={[styles.barContent, { backgroundColor }]}>
++          <Animated.View style={[styles.barContent, { backgroundColor }]} collapsable={false}>
+             <SafeAreaView
+               forceInset={{ top: 'never', bottom: 'always' }}
+               style={[styles.items, { maxWidth: maxTabWidth * routes.length }]}
+             >
+               {shifting ? (
+-                <Animated.View
++                <Animated.View collapsable={false}
+                   pointerEvents="none"
+                   style={[
+                     styles.ripple,
+@@ -772,13 +772,13 @@ class BottomNavigation<T: *> extends React.Component<Props<T>, State> {
+                     style={styles.item}
+                   >
+                     <View pointerEvents="none">
+-                      <Animated.View
++                      <Animated.View collapsable={false}
+                         style={[
+                           styles.iconContainer,
+                           { transform: [{ translateY }] },
+                         ]}
+                       >
+-                        <Animated.View
++                        <Animated.View collapsable={false}
+                           style={[
+                             styles.iconWrapper,
+                             { opacity: activeOpacity },
+@@ -798,7 +798,7 @@ class BottomNavigation<T: *> extends React.Component<Props<T>, State> {
+                             />
+                           )}
+                         </Animated.View>
+-                        <Animated.View
++                        <Animated.View collapsable={false}
+                           style={[
+                             styles.iconWrapper,
+                             { opacity: inactiveOpacity },
+@@ -839,13 +839,13 @@ class BottomNavigation<T: *> extends React.Component<Props<T>, State> {
+                         </View>
+                       </Animated.View>
+                       {labeled ? (
+-                        <Animated.View
++                        <Animated.View collapsable={false}
+                           style={[
+                             styles.labelContainer,
+                             { transform: [{ scale }] },
+                           ]}
+                         >
+-                          <Animated.View
++                          <Animated.View collapsable={false}
+                             style={[
+                               styles.labelWrapper,
+                               { opacity: activeOpacity },
+@@ -869,7 +869,7 @@ class BottomNavigation<T: *> extends React.Component<Props<T>, State> {
+                             )}
+                           </Animated.View>
+                           {shifting ? null : (
+-                            <Animated.View
++                            <Animated.View collapsable={false}
+                               style={[
+                                 styles.labelWrapper,
+                                 { opacity: inactiveOpacity },
+diff --git a/node_modules/react-native-paper/src/components/CheckboxAndroid.js b/node_modules/react-native-paper/src/components/CheckboxAndroid.js
+index 33b4e12..66b8467 100644
+--- a/node_modules/react-native-paper/src/components/CheckboxAndroid.js
++++ b/node_modules/react-native-paper/src/components/CheckboxAndroid.js
+@@ -132,7 +132,7 @@ class CheckboxAndroid extends React.Component<Props, State> {
+         accessibilityLiveRegion="polite"
+         style={styles.container}
+       >
+-        <Animated.View style={{ transform: [{ scale: this.state.scaleAnim }] }}>
++        <Animated.View style={{ transform: [{ scale: this.state.scaleAnim }] }} collapsable={false}>
+           <Icon
+             allowFontScaling={false}
+             source={icon}
+@@ -140,7 +140,7 @@ class CheckboxAndroid extends React.Component<Props, State> {
+             color={checkboxColor}
+           />
+           <View style={[StyleSheet.absoluteFill, styles.fillContainer]}>
+-            <Animated.View
++            <Animated.View collapsable={false}
+               style={[
+                 styles.fill,
+                 { borderColor: checkboxColor },
+diff --git a/node_modules/react-native-paper/src/components/CrossFadeIcon.js b/node_modules/react-native-paper/src/components/CrossFadeIcon.js
+index e4da9b9..abb7a44 100644
+--- a/node_modules/react-native-paper/src/components/CrossFadeIcon.js
++++ b/node_modules/react-native-paper/src/components/CrossFadeIcon.js
+@@ -96,7 +96,7 @@ class CrossFadeIcon extends React.Component<Props, State> {
+         ]}
+       >
+         {this.state.previousIcon ? (
+-          <Animated.View
++          <Animated.View collapsable={false}
+             style={[
+               styles.icon,
+               {
+@@ -108,7 +108,7 @@ class CrossFadeIcon extends React.Component<Props, State> {
+             <Icon source={this.state.previousIcon} size={size} color={color} />
+           </Animated.View>
+         ) : null}
+-        <Animated.View
++        <Animated.View collapsable={false}
+           style={[
+             styles.icon,
+             {
+diff --git a/node_modules/react-native-paper/src/components/DataTable/DataTableTitle.js b/node_modules/react-native-paper/src/components/DataTable/DataTableTitle.js
+index d764fd5..a96aae0 100644
+--- a/node_modules/react-native-paper/src/components/DataTable/DataTableTitle.js
++++ b/node_modules/react-native-paper/src/components/DataTable/DataTableTitle.js
+@@ -93,7 +93,7 @@ class DataTableTitle extends React.Component<Props, State> {
+     });
+ 
+     const icon = sortDirection ? (
+-      <Animated.View style={[styles.icon, { transform: [{ rotate: spin }] }]}>
++      <Animated.View style={[styles.icon, { transform: [{ rotate: spin }] }]} collapsable={false}>
+         <Icon source="arrow-downward" size={16} color={theme.colors.text} />
+       </Animated.View>
+     ) : null;
+diff --git a/node_modules/react-native-paper/src/components/FAB/FABGroup.js b/node_modules/react-native-paper/src/components/FAB/FABGroup.js
+index d3a9853..ff6d346 100644
+--- a/node_modules/react-native-paper/src/components/FAB/FABGroup.js
++++ b/node_modules/react-native-paper/src/components/FAB/FABGroup.js
+@@ -236,7 +236,7 @@ class FABGroup extends React.Component<Props, State> {
+       <View pointerEvents="box-none" style={[styles.container, style]}>
+         {open ? <StatusBar barStyle="light-content" /> : null}
+         <TouchableWithoutFeedback onPress={this._close}>
+-          <Animated.View
++          <Animated.View collapsable={false}
+             pointerEvents={open ? 'auto' : 'none'}
+             style={[
+               styles.backdrop,
+diff --git a/node_modules/react-native-paper/src/components/Menu/Menu.js b/node_modules/react-native-paper/src/components/Menu/Menu.js
+index 92a21bb..350738a 100644
+--- a/node_modules/react-native-paper/src/components/Menu/Menu.js
++++ b/node_modules/react-native-paper/src/components/Menu/Menu.js
+@@ -384,7 +384,7 @@ class Menu extends React.Component<Props, State> {
+             pointerEvents={visible ? 'auto' : 'none'}
+             style={[styles.wrapper, positionStyle, style]}
+           >
+-            <Animated.View style={{ transform: positionTransforms }}>
++            <Animated.View style={{ transform: positionTransforms }} collapsable={false}>
+               <Surface
+                 style={[styles.shadowMenuContainer, shadowMenuContainerStyle]}
+               >
+diff --git a/node_modules/react-native-paper/src/components/Modal.js b/node_modules/react-native-paper/src/components/Modal.js
+index 7d98301..66653f3 100644
+--- a/node_modules/react-native-paper/src/components/Modal.js
++++ b/node_modules/react-native-paper/src/components/Modal.js
+@@ -166,7 +166,7 @@ class Modal extends React.Component<Props, State> {
+     const { children, dismissable, theme, contentContainerStyle } = this.props;
+     const { colors } = theme;
+     return (
+-      <Animated.View
++      <Animated.View collapsable={false}
+         accessibilityViewIsModal
+         accessibilityLiveRegion="polite"
+         style={StyleSheet.absoluteFill}
+@@ -174,7 +174,7 @@ class Modal extends React.Component<Props, State> {
+         <TouchableWithoutFeedback
+           onPress={dismissable ? this._hideModal : undefined}
+         >
+-          <Animated.View
++          <Animated.View collapsable={false}
+             style={[
+               styles.backdrop,
+               { backgroundColor: colors.backdrop, opacity: this.state.opacity },
+diff --git a/node_modules/react-native-paper/src/components/RadioButtonAndroid.js b/node_modules/react-native-paper/src/components/RadioButtonAndroid.js
+index 1e7042d..4786e79 100644
+--- a/node_modules/react-native-paper/src/components/RadioButtonAndroid.js
++++ b/node_modules/react-native-paper/src/components/RadioButtonAndroid.js
+@@ -146,7 +146,7 @@ class RadioButtonAndroid extends React.Component<Props, State> {
+               accessibilityLiveRegion="polite"
+               style={styles.container}
+             >
+-              <Animated.View
++              <Animated.View collapsable={false}
+                 style={[
+                   styles.radio,
+                   {
+@@ -159,7 +159,7 @@ class RadioButtonAndroid extends React.Component<Props, State> {
+                   <View
+                     style={[StyleSheet.absoluteFill, styles.radioContainer]}
+                   >
+-                    <Animated.View
++                    <Animated.View collapsable={false}
+                       style={[
+                         styles.dot,
+                         {
+diff --git a/node_modules/react-native-paper/src/components/Surface.js b/node_modules/react-native-paper/src/components/Surface.js
+index a83eed3..a610bec 100644
+--- a/node_modules/react-native-paper/src/components/Surface.js
++++ b/node_modules/react-native-paper/src/components/Surface.js
+@@ -61,7 +61,7 @@ class Surface extends React.Component<Props> {
+     const { elevation } = flattenedStyles;
+ 
+     return (
+-      <Animated.View
++      <Animated.View collapsable={false}
+         {...rest}
+         style={[
+           { backgroundColor: theme.colors.surface },
+diff --git a/node_modules/react-native-paper/src/components/TextInput/TextInputFlat.js b/node_modules/react-native-paper/src/components/TextInput/TextInputFlat.js
+index ab6414f..815c861 100644
+--- a/node_modules/react-native-paper/src/components/TextInput/TextInputFlat.js
++++ b/node_modules/react-native-paper/src/components/TextInput/TextInputFlat.js
+@@ -143,7 +143,7 @@ class TextInputFlat extends React.Component<ChildTextInputProps, {}> {
+ 
+     return (
+       <View style={[containerStyle, style]}>
+-        <Animated.View
++        <Animated.View collapsable={false}
+           style={[
+             styles.underline,
+             {
